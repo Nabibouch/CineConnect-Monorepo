@@ -1,7 +1,9 @@
-let result = 0;
+import ENV from "./config/ENV.js";
+import app from "./app.js";
 
-for(let i = 0; i <5; i++){
-    result += 1;
-}
 
-console.log(result);
+const port = ENV.PORT
+
+app.listen(port, () => {
+    console.log(`Server listening on port : ${port}`);
+})
