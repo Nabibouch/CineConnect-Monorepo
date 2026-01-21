@@ -9,7 +9,10 @@
     "build": "tsc",
     "dev": "nodemon dist/index.js",
     "start": "pnpm run build && node dist/index.js",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "drizzle:push": "npx drizzle-kit push",
+    "drizzle:generate": "npx drizzle-kit generate",
+    "drizzle:migrate": "npx drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
