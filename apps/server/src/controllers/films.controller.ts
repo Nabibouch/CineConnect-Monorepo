@@ -29,3 +29,19 @@ export const getAllFilms = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Error inconnue" });
   }
 };
+
+export const updateOneFilm = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const updatedFilm = await filmService.updateById(id, req.body);
+    return res.status(200).json({ message: "Film updated", film: updatedFilm });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
