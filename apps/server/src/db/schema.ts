@@ -18,6 +18,7 @@ export const filmsTable = pgTable("films", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   description: text(),
+  release_date: timestamp(),
 });
 
 export const postsTable = pgTable("posts", {
