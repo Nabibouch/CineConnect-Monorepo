@@ -32,7 +32,7 @@ export const signUp = async (req: Request, res: Response) => {
   }
 };
 
-export const findAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const usersList = await userService.findAllUsers();
     return res.status(200).json({
@@ -46,7 +46,7 @@ export const findAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const findOneUser = async (
+export const getOneUser = async (
   req: Request<{ id: string }>,
   res: Response,
 ) => {

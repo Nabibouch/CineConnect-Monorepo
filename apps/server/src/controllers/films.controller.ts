@@ -63,3 +63,19 @@ export const deleteOneFilm = async (
     return res.status(500).json({ error: "Erreur inconnue" });
   }
 };
+
+export const getOneFilm = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const film = await filmService.findFilmById(id);
+    return res.status(200).json({ film: film });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};

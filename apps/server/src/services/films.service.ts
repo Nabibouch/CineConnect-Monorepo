@@ -74,6 +74,27 @@ const filmService = {
       );
     }
   },
+
+  async findFilmById(id: string) {
+    try {
+      const filmId = Number(id);
+      if (isNaN(filmId)) {
+        throw new Error("L'id n'est pas valide");
+      }
+      const film = await db
+        .select()
+        .from(filmsTable)
+        .where(eq(filmsTable.id, filmId))
+        .limit(1);
+      if (!film.length) {
+        throw new Error(`Aucun film avec l'id ${filmId} n'a été trouvé`);
+      }
+      return film[0];
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error("Erreur lors de la récupération dans la base de données");
+    }
+  },
 };
 
 export default filmService;

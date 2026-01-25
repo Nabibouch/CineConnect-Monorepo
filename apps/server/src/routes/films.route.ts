@@ -3,6 +3,7 @@ import {
   addFilm,
   deleteOneFilm,
   getAllFilms,
+  getOneFilm,
   updateOneFilm,
 } from "../controllers/films.controller.js";
 
@@ -12,5 +13,6 @@ router.post("/", addFilm);
 router.get("/", getAllFilms);
 router.put("/:id", updateOneFilm);
 router.delete("/:id", deleteOneFilm);
+router.get("/:id", getOneFilm);
 
 export default router;
