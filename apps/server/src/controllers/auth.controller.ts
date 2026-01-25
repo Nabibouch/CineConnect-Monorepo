@@ -64,3 +64,39 @@ export const findOneUser = async (
     return res.status(500).json({ error: "erreur inconnue" });
   }
 };
+
+export const updateOneUser = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const updatedUser = await userService.updateById(req.body, id);
+    return res
+      .status(200)
+      .json({ message: "Utilisateur modifié", user: updatedUser });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
+export const deleteOneUser = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await userService.removeById(id);
+    return res
+      .status(200)
+      .json({ message: "Utilisateur supprimé", user: deletedUser });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};

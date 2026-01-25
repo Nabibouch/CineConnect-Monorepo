@@ -53,6 +53,27 @@ const filmService = {
       throw new Error("Erreur lors de la modification dans la base de donnée");
     }
   },
+  async removeById(id: string) {
+    try {
+      const filmId = Number(id);
+      if (isNaN(filmId)) {
+        throw new Error("L'id n'est pas valide");
+      }
+      const deletedFilm = await db
+        .delete(filmsTable)
+        .where(eq(filmsTable.id, filmId))
+        .returning();
+      if (!deletedFilm.length) {
+        throw new Error(`Aucun film avec l'id ${filmId} n'as été trouvé`);
+      }
+      return deletedFilm[0];
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error(
+        "Erreur lors de la suppression du film dans la base de donnée",
+      );
+    }
+  },
 };
 
 export default filmService;

@@ -3,6 +3,12 @@ import db from "../db/index.js";
 import { usersTable } from "../db/schema.js";
 import argon2 from "argon2";
 
+type udpdateData = {
+  username?: string;
+  email?: string;
+  password: string;
+};
+
 const userService = {
   async createUser(data: {
     username: string;
@@ -106,7 +112,52 @@ const userService = {
 
       return userWithoutPassword;
     } catch (error) {
-      throw new Error("Erreur inconnue");
+      throw new Error("Erreur server");
+    }
+  },
+
+  async updateById(data: udpdateData, id: string) {
+    try {
+      const userId = Number(id);
+      if (isNaN(userId)) throw new Error("Id n'est pas valide");
+
+      const updatedUser = await db
+        .update(usersTable)
+        .set(data)
+        .where(eq(usersTable.id, userId))
+        .returning();
+
+      if (!updatedUser.length)
+        throw new Error(
+          `Aucun utilisateur avec l'id ${userId} n'as été trouvé`,
+        );
+      return updatedUser[0];
+    } catch (error) {
+      throw new Error("Erreur lors de la modification dans la base de donnée");
+    }
+  },
+
+  async removeById(id: string) {
+    try {
+      const userId = Number(id);
+      if (isNaN(userId)) {
+        throw new Error("L'id n'est pas valide");
+      }
+      const deletedUser = await db
+        .delete(usersTable)
+        .where(eq(usersTable.id, userId))
+        .returning();
+      if (!deletedUser.length) {
+        throw new Error(
+          `Aucun utilisateur avec l'id ${userId} n'as été trouvé`,
+        );
+      }
+      return deletedUser[0];
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error(
+        "Erreur lors de la suppression de l'utilisateur dans la base de donnée",
+      );
     }
   },
 };

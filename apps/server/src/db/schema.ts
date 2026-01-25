@@ -48,3 +48,18 @@ export const ratingsTable = pgTable("ratings", {
     .notNull(),
   rate: integer().notNull(),
 });
+
+export const categoriesTable = pgTable("categories", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull().unique(),
+});
+
+export const categorizationTable = pgTable("categorization", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  film_id: integer()
+    .references(() => filmsTable.id)
+    .notNull(),
+  categorie_id: integer()
+    .references(() => categoriesTable.id)
+    .notNull(),
+});
