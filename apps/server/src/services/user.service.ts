@@ -66,25 +66,23 @@ const userService = {
     }
   },
 
-  async findUserById(id: string) {
-    try {
-      const userId = Number(id);
+  async findUserByEmail(email: string) {
+  try {
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        username: usersTable.username,
+        email: usersTable.email,
+        password: usersTable.password,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
 
-      if (isNaN(userId)) throw new Error("L'id est incorrect");
-
-      const [user] = await db
-        .select({
-          id: usersTable.id,
-          username: usersTable.username,
-        })
-        .from(usersTable)
-        .where(eq(usersTable.id, userId));
-
-      return user;
-    } catch (error) {
-      throw new Error("Erreur lors de la récupération de l'utilisateur");
-    }
-  },
+    return user;
+  } catch (error) {
+    throw new Error("Erreur lors de la récupération de l'utilisateur par email");
+  }
+},
 
   async connexion(data: { email: string; password: string }) {
     try {
@@ -115,6 +113,23 @@ const userService = {
       throw new Error("Erreur server");
     }
   },
+
+    async findUserById(id: string) {
+    const userId = Number(id);
+    if (isNaN(userId)) throw new Error("L'id est incorrect");
+
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        username: usersTable.username,
+        email: usersTable.email,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    return user;
+  },
+
 
   async updateById(data: udpdateData, id: string) {
     try {

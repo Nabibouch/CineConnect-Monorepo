@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import userService from "../services/user.service.js";
+import argon2 from "argon2";
 
 // ✅ SIGNUP = Inscription (createUser)
 export const signUp = async (req: Request, res: Response) => {
@@ -17,24 +18,26 @@ export const signUp = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "erreur inconnue" });
   }
 };
-
 // 🔹 TEMPORAIRE : SIGNIN fait INSERT (comme signup)
 export const signIn = async (req: Request, res: Response) => {
   try {
-    const newUser = await userService.createUser(req.body); // insertion
-    const { password, ...userWithoutPassword } = newUser;
-    return res.status(201).json({
-      message: "Nouvel utilisateur créé (via signin temporaire)",
+    const { email, password } = req.body;
+    const user = await userService.findUserByEmail(email);
+    if (!user) return res.status(400).json({ error: "Utilisateur non trouvé" });
+
+    const validPassword = await argon2.verify(user.password, password);
+    if (!validPassword) return res.status(400).json({ error: "Mot de passe incorrect" });
+
+    const { password: _, ...userWithoutPassword } = user;
+    return res.status(200).json({
+      message: "Connexion réussie",
       user: userWithoutPassword,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(400).json({ error: error.message });
-    }
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
     return res.status(500).json({ error: "erreur inconnue" });
   }
 };
-
 // ✅ getAllUsers
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
