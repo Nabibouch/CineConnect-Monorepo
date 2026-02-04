@@ -11,6 +11,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "dependencies": {
-    "drizzle-orm": "^0.45.1"
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.6",
+    "drizzle-orm": "^0.45.1",
+    "react-hook-form": "^7.71.1",
+    "tailwind-merge": "^3.4.0"
   }
 }
