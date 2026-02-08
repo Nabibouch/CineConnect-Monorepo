@@ -1,9 +1,20 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router"
+import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 
 export const Route = createFileRoute("/signup")({
   component: SignUpPage,
 })
+
+interface SignUpData {
+  username: string
+  email: string
+  password: string
+}
+
+interface SignUpError {
+  message: string
+}
 
 function SignUpPage() {
   const navigate = useNavigate()
@@ -11,8 +22,59 @@ function SignUpPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [isLoading, setIsLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
+
+ const signUpMutation = useMutation<void, SignUpError, SignUpData>({
+  mutationFn: async (data: SignUpData) => {
+    console.log("VITE_API_URL:", import.meta.env.VITE_API_URL)
+    console.log("Sending data:", data)
+    console.log("Stringified:", JSON.stringify(data))
+    
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/users/signup`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+
+    console.log("Response status:", response.status)
+    console.log("Response headers:", response.headers)
+
+    // Always try to get the response body
+    const responseText = await response.text()
+    console.log("Response body (raw):", responseText)
+
+    if (!response.ok) {
+      let errorMessage = "Erreur lors de l'inscription"
+      try {
+        const errorData = JSON.parse(responseText)
+        console.log("Error data parsed:", errorData)
+        errorMessage = errorData.message || errorMessage
+      } catch (e) {
+        console.log("Could not parse error JSON, raw text:", responseText)
+        errorMessage = responseText || errorMessage
+      }
+      throw new Error(errorMessage)
+    }
+  },
+  onSuccess: () => {
+    setSuccessMessage("Inscription réussie ! Redirection...")
+    setTimeout(() => {
+      navigate({ to: "/signin" })
+    }, 1500)
+  },
+  onError: (error) => {
+    setErrors({
+      submit:
+        error.message ||
+        "Erreur lors de l'inscription. Vérifiez votre connexion.",
+    })
+  },
+})
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {}
@@ -40,48 +102,18 @@ function SignUpPage() {
     e.preventDefault()
     setErrors({})
     setSuccessMessage("")
-
+   
     const newErrors = validateForm()
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-
-    setIsLoading(true)
-
-    try {
-      const response = await fetch("http://localhost:3000/api/users/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      })
-
-      if (response.ok) {
-        setSuccessMessage("Inscription réussie ! Redirection...")
-        setTimeout(() => {
-          navigate({ to: "/signin" })
-        }, 1500)
-      } else {
-        const errorData = await response.json()
-        setErrors({
-          submit: errorData.message || "Erreur lors de l'inscription"
-        })
-      }
-    } catch (error) {
-      console.error("Erreur:", error)
-      setErrors({
-        submit: "Erreur lors de l'inscription. Vérifiez votre connexion."
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    console.log({ username, email, password })
+    signUpMutation.mutate({
+      username,
+      email,
+      password,
+    })
   }
 
   return (
@@ -169,10 +201,10 @@ function SignUpPage() {
             {/* SUBMIT BUTTON */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={signUpMutation.isPending}
               className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 text-white font-semibold py-2.5 rounded-lg transition duration-200 mt-6 flex items-center justify-center gap-2"
             >
-              {isLoading ? (
+              {signUpMutation.isPending ? (
                 <>
                   <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   Creating account...
