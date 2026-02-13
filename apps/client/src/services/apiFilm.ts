@@ -4,7 +4,7 @@ export interface Film {
   description: string;
   release_date: string;
 }
-const url = import.meta.env.VITE_LOCAL_URL;
+const url = import.meta.env.VITE_API_URL;
 
 export const apiFilm = {
   getAllFilms: async (): Promise<Film[]> => {
