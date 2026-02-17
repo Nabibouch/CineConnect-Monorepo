@@ -74,22 +74,22 @@ if (import.meta.vitest) {
 
       expect(result.password).toBe("Password required")
 
-     })  })}
+     })  
 
 
-//     // ===============================
-//     // TEST 4 : Password trop court
-//     // ===============================
-//     it("should return 'Minimum 6 characters' when password is too short", () => {
+     // ===============================
+     // TEST 4 : Password trop court
+     // ===============================
+     it("should return 'Minimum 6 characters' when password is too short", () => {
 
-//       const email = "test@test.com"
-//       const password = "123"
+       const email = "test@test.com"
+       const password = "123"
 
-//       const result = validateForm(email, password)
+       const result = validateForm(email, password)
 
-//       expect(result.password).toBe("Minimum 6 characters")
+       expect(result.password).toBe("Minimum 6 characters")
 
-//     })
+     }) })}
 
 
 //     // ===============================
