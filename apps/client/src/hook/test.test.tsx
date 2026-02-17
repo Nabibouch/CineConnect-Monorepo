@@ -89,25 +89,24 @@ if (import.meta.vitest) {
 
        expect(result.password).toBe("Minimum 6 characters")
 
-     }) })}
+     }) 
 
 
-//     // ===============================
-//     // TEST 5 : Formulaire valide
-//     // ===============================
-//     it("should return no errors when email and password are valid", () => {
+     // ===============================
+     // TEST 5 : Formulaire valide
+     // ===============================
+     it("should return no errors when email and password are valid", () => {
 
-//       const email = "test@test.com"
-//       const password = "password123"
+       const email = "test@test.com"
+       const password = "password123"
 
-//       const result = validateForm(email, password)
+       const result = validateForm(email, password)
 
-//       expect(result).toEqual({})
+       expect(result).toEqual({})
 
-//     })
+     })
 
+   })
 
-//   })
-
-// })
+ }
 
