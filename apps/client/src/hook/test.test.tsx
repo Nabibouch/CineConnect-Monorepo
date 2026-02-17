@@ -45,22 +45,22 @@ if (import.meta.vitest) {
 
       expect(result.email).toBe("Email required")
 
-    }) })}
+    }) 
 
 
-//     // ===============================
-//     // TEST 2 : Email invalide
-//     // ===============================
-//     it("should return 'Invalid email' when email format is incorrect", () => {
+    // ===============================
+    // TEST 2 : Email invalide
+    // ===============================
+     it("should return 'Invalid email' when email format is incorrect", () => {
 
-//       const email = "invalid-email"
-//       const password = "password123"
+       const email = "invalid-email"
+       const password = "password123"
 
-//       const result = validateForm(email, password)
+       const result = validateForm(email, password)
 
-//       expect(result.email).toBe("Invalid email")
+       expect(result.email).toBe("Invalid email")
 
-//     })
+     }) })}
 
 
 //     // ===============================
