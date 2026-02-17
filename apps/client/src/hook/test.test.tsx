@@ -60,22 +60,21 @@ if (import.meta.vitest) {
 
        expect(result.email).toBe("Invalid email")
 
-     }) })}
+     }) 
 
+     // ===============================
+      // TEST 3 : Password vide
+    // ===============================
+    it("should return 'Password required' when password is empty", () => {
 
-//     // ===============================
-//     // TEST 3 : Password vide
-//     // ===============================
-//     it("should return 'Password required' when password is empty", () => {
+      const email = "test@test.com"
+       const password = ""
 
-//       const email = "test@test.com"
-//       const password = ""
+       const result = validateForm(email, password)
 
-//       const result = validateForm(email, password)
+      expect(result.password).toBe("Password required")
 
-//       expect(result.password).toBe("Password required")
-
-//     })
+     })  })}
 
 
 //     // ===============================
