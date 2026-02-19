@@ -24,6 +24,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.8",
     "@types/pg": "^8.16.0",
+    "@vitest/coverage-v8": "4.0.18",
     "drizzle-kit": "^0.31.8",
     "nodemon": "^3.1.11",
     "tsx": "^4.21.0",
