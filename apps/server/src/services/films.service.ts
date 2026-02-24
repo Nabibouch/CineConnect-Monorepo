@@ -2,10 +2,10 @@ import db from "../db/index.js";
 import { filmsTable } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 
-type updateData = {
-  title?: string;
-  description?: string;
-  release_date?: Date | string;
+type UpdateData = Partial<
+  Omit<typeof filmsTable.$inferInsert, "id" | "created_at" | "released_date">
+> & {
+  released_date?: Date | string;
 };
 
 const filmService = {
@@ -30,56 +30,37 @@ const filmService = {
     }
   },
 
-  async updateById(id: string, data: updateData) {
-    try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) throw new Error("L'id n'est pas valide");
-
-      if (!Object.keys(data).length) {
-        throw new Error("Aucune donnée envoyé");
-      }
-
-      const dataToUpdate: Partial<typeof filmsTable.$inferInsert> = {
-         ...(data.title && { title: data.title }),
-         ...(data.description && { description: data.description }),
-         ...(data.release_date && { release_date: new Date(data.release_date) }),
-       };
-
-      const updatedFilm = await db
-        .update(filmsTable)
-        .set(dataToUpdate)
-        .where(eq(filmsTable.id, filmId))
-        .returning();
-
-      if (!updatedFilm.length) {
-        throw new Error(`Aucun film avec l'id ${id} n'a été trouvé`);
-      }
-
-      return updatedFilm[0];
-    } catch (error) {
-      throw new Error("Erreur lors de la modification dans la base de donnée");
+  async updateById(id: string, data: UpdateData) {
+    const filmId = Number(id);
+    if (isNaN(filmId)) throw new Error("L'id n'est pas valide");
+  
+    if (!Object.keys(data).length) {
+      throw new Error("Aucune donnée envoyée");
     }
-  },
-  async removeById(id: string) {
-    try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) {
-        throw new Error("L'id n'est pas valide");
-      }
-      const deletedFilm = await db
-        .delete(filmsTable)
-        .where(eq(filmsTable.id, filmId))
-        .returning();
-      if (!deletedFilm.length) {
-        throw new Error(`Aucun film avec l'id ${filmId} n'as été trouvé`);
-      }
-      return deletedFilm[0];
-    } catch (error) {
-      if (error instanceof Error) throw error;
-      throw new Error(
-        "Erreur lors de la suppression du film dans la base de donnée",
-      );
+  
+    const { released_date, ...rest } = data;
+  
+    const dataToUpdate: Partial<typeof filmsTable.$inferInsert> = {
+      ...rest,
+      ...(released_date !== undefined && {
+        released_date:
+          typeof released_date === "string"
+            ? new Date(released_date)
+            : released_date,
+      }),
+    };
+  
+    const updatedFilm = await db
+      .update(filmsTable)
+      .set(dataToUpdate)
+      .where(eq(filmsTable.id, filmId))
+      .returning();
+  
+    if (!updatedFilm.length) {
+      throw new Error(`Aucun film avec l'id ${id} n'a été trouvé`);
     }
+  
+    return updatedFilm[0];
   },
 
   async findFilmById(id: string) {
