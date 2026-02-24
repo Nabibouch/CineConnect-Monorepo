@@ -3,6 +3,7 @@ export interface Film {
   title: string;
   description: string;
   release_date: string;
+  poster_url: string;
 }
 const url = import.meta.env.VITE_API_URL;
 
