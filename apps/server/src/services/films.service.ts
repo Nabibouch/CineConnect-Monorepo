@@ -102,6 +102,43 @@ const filmService = {
       throw new Error("Erreur lors de la récupération dans la base de données");
     }
   },
+
+
+   async importFromOMDB(title: string): Promise<any> {
+  try {
+    const response: Response = await fetch(
+      `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}`
+    );
+    const data: any = await response.json();
+
+    if (data.Response === "False") {
+      throw new Error("Film non trouvé");
+    }
+
+    const [film] = await db
+      .insert(filmsTable)
+      .values({
+        title: data.Title as string,
+        description: data.Plot as string,
+        poster_url: data.Poster as string,
+        language: data.Language as string,
+        actors: (data.Actors as string)?.split(", ") || [],
+        awards: (data.Awards as string)?.split(", ") || [],
+        released_date: new Date(data.Released),
+        author: data.Director as string,
+        trailer: null, 
+        // ... autres champs
+      })
+      .returning();
+
+    return film;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error("Erreur lors de l'import : " + error.message);
+    }
+    throw new Error("Erreur inconnue lors de l'import");
+  }
+}
 };
 
 export default filmService;
