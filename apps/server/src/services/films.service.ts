@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 type updateData = {
   title?: string;
   description?: string;
-  release_date?: Date;
+  release_date?: Date | string;
 };
 
 const filmService = {
@@ -38,9 +38,16 @@ const filmService = {
       if (!Object.keys(data).length) {
         throw new Error("Aucune donnée envoyé");
       }
+
+      const dataToUpdate: Partial<typeof filmsTable.$inferInsert> = {
+         ...(data.title && { title: data.title }),
+         ...(data.description && { description: data.description }),
+         ...(data.release_date && { release_date: new Date(data.release_date) }),
+       };
+
       const updatedFilm = await db
         .update(filmsTable)
-        .set(data)
+        .set(dataToUpdate)
         .where(eq(filmsTable.id, filmId))
         .returning();
 
