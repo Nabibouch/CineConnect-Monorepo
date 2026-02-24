@@ -24,6 +24,7 @@
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "vitest": "^4.0.18",
     "zod": "^3.25.76",
     "zustand": "^5.0.9"
   },
@@ -31,7 +32,7 @@
     "@eslint/js": "^9.39.1",
     "@tanstack/router-plugin": "^1.140.5",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.5",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.18",

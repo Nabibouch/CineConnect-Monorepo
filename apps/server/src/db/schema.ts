@@ -19,6 +19,7 @@ export const filmsTable = pgTable("films", {
   title: varchar({ length: 255 }).notNull(),
   description: text(),
   release_date: timestamp(),
+ // author: varchar({length: 255}).notNull(),
 });
 
 export const postsTable = pgTable("posts", {
@@ -63,3 +64,4 @@ export const categorizationTable = pgTable("categorization", {
     .references(() => categoriesTable.id)
     .notNull(),
 });
+//
