@@ -3,6 +3,7 @@ import { filmsTable } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import { FilmInput } from "../utils/filmInput.js";
 import { normalizeFilmInput } from "../utils/normalizeFilmInput.js";
+import { normalizeId } from "../utils/normalizeId.js";
 
 const filmService = {
   async createFilm(data: FilmInput) {
@@ -32,8 +33,7 @@ const filmService = {
   },
 
   async updateById(id: string, data: FilmInput) {
-    const filmId = Number(id);
-    if (isNaN(filmId)) throw new Error("L'id n'est pas valide");
+    const filmId = normalizeId(id);
 
     if (!Object.keys(data).length) {
       throw new Error("Aucune donnée envoyée");
@@ -56,10 +56,7 @@ const filmService = {
 
   async findFilmById(id: string) {
     try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) {
-        throw new Error("L'id n'est pas valide");
-      }
+      const filmId = normalizeId(id);
       const film = await db
         .select()
         .from(filmsTable)
@@ -77,10 +74,7 @@ const filmService = {
 
   async removeById(id: string) {
     try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) {
-        throw new Error("L'id n'est pas valide");
-      }
+      const filmId = normalizeId(id);
       const deletedFilm = await db
         .delete(filmsTable)
         .where(eq(filmsTable.id, filmId))
@@ -96,6 +90,14 @@ const filmService = {
       );
     }
   },
+
+  async rateById(id: string, rating: number) {
+    try {
+
+    } catch (error) {
+
+    }
+  }
 };
 
 export default filmService;

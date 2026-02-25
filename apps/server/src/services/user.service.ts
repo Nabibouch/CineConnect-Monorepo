@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import db from "../db/index.js";
 import { usersTable } from "../db/schema.js";
 import argon2 from "argon2";
+import { normalizeId } from "../utils/normalizeId.js";
 
 type udpdateData = {
   username?: string;
@@ -68,9 +69,7 @@ const userService = {
 
   async findUserById(id: string) {
     try {
-      const userId = Number(id);
-
-      if (isNaN(userId)) throw new Error("L'id est incorrect");
+      const userId = normalizeId(id, "L'id est incorrect");
 
       const [user] = await db
         .select({
@@ -118,8 +117,7 @@ const userService = {
 
   async updateById(data: udpdateData, id: string) {
     try {
-      const userId = Number(id);
-      if (isNaN(userId)) throw new Error("Id n'est pas valide");
+      const userId = normalizeId(id, "Id n'est pas valide");
 
       const updatedUser = await db
         .update(usersTable)
@@ -139,10 +137,7 @@ const userService = {
 
   async removeById(id: string) {
     try {
-      const userId = Number(id);
-      if (isNaN(userId)) {
-        throw new Error("L'id n'est pas valide");
-      }
+      const userId = normalizeId(id);
       const deletedUser = await db
         .delete(usersTable)
         .where(eq(usersTable.id, userId))
