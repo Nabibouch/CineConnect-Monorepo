@@ -3,19 +3,10 @@ import db from "../db/index.js";
 import { usersTable } from "../db/schema.js";
 import argon2 from "argon2";
 import { normalizeId } from "../utils/normalizeId.js";
-
-type udpdateData = {
-  username?: string;
-  email?: string;
-  password: string;
-};
+import { UserInput } from "../utils/userInput.js";
 
 const userService = {
-  async createUser(data: {
-    username: string;
-    email: string;
-    password: string;
-  }) {
+  async createUser(data: UserInput) {
     if (!data.username || !data.email || !data.password) {
       throw new Error("Tout les champs doivent être remplis");
     }
@@ -115,7 +106,7 @@ const userService = {
     }
   },
 
-  async updateById(data: udpdateData, id: string) {
+  async updateById(data: UserInput, id: string) {
     try {
       const userId = normalizeId(id, "Id n'est pas valide");
 
