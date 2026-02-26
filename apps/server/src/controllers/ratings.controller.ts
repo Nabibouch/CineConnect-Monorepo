@@ -23,3 +23,15 @@ export const getAllRatings = async (req: Request, res: Response) => {
     }
 }
 
+export const updateOneRating = async (req: Request<{id: string}>, res: Response) => {
+    try {
+        const {id} = req.params;
+        const updatedRating = ratingService.updateById(id, req.body);
+        return res.status(200).json({message: "note modifié", note: updatedRating})
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(400).json({error: error.message})
+        }
+    }
+}
+
