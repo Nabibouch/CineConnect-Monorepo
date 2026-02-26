@@ -52,3 +52,19 @@ export const deleteOneRating = async (
       return res.status(500).json({ error: "Erreur inconnue" });
     }
   };
+
+export const getOneRating = async (
+    req: Request<{ id: string }>,
+    res: Response,
+  ) => {
+    try {
+      const { id } = req.params;
+      const rating = await ratingService.findRatingById(id);
+      return res.status(200).json({ rating: rating });
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Erreur inconnue" });
+    }
+  };
