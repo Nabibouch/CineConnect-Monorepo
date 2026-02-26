@@ -35,3 +35,20 @@ export const updateOneRating = async (req: Request<{id: string}>, res: Response)
     }
 }
 
+export const deleteOneRating = async (
+    req: Request<{ id: string }>,
+    res: Response,
+  ) => {
+    try {
+      const { id } = req.params;
+      const deletedRating = await ratingService.removeById(id);
+      return res
+        .status(200)
+        .json({ message: "note supprimé", note: deletedRating });
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).json({ error: error.message });
+      }
+      return res.status(500).json({ error: "Erreur inconnue" });
+    }
+  };
