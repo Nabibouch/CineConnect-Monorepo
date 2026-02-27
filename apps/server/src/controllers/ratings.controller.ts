@@ -4,7 +4,7 @@ import ratingService from "../services/ratings.service.js";
 export const addRating = async (req : Request, res: Response) => {
     try {
         const newRating = ratingService.createRating(req.body);
-        return res.status(201).json({message: "note ajouté", note: newRating})
+        return res.status(201).json({message: "note ajouté", note: (await newRating).rate})
     } catch (error) {
         if (error instanceof Error) {
             return res.status(400).json({error: error.message})
