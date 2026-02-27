@@ -1,12 +1,12 @@
 import express from "express";
-import { 
-    addRating, 
-    deleteOneRating, 
-    getAllRatings, 
-    getOneRating, 
-    updateOneRating 
-} from "../controllers/ratings.controller.js";
-
+import {
+  addRating,
+  getAllRatings,
+  updateOneRating,
+  deleteOneRating,
+  getOneRating
+}
+from "../controllers/ratings.controller.js"
 
 const router = express.Router();
 
