@@ -1,5 +1,10 @@
 import db from "../db/index.js";
-import { filmsTable } from "../db/schema.js";
+import {
+  commentsTable,
+  filmsTable,
+  postsTable,
+  ratingsTable,
+} from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import { FilmInput } from "../utils/filmInput.js";
 import { normalizeFilmInput } from "../utils/normalizeFilmInput.js";
@@ -25,8 +30,17 @@ const filmService = {
 
   async findAllFilms() {
     try {
-      const listFilms = await db.select().from(filmsTable);
-      return listFilms;
+      const films = await db.select().from(filmsTable);
+      const posts = await db.select().from(postsTable);
+      const comments = await db.select().from(commentsTable);
+      const ratings = await db.select().from(ratingsTable);
+
+      return films.map((film) => ({
+        ...film,
+        posts: posts.filter((p) => p.film_id === film.id),
+        comments: comments.filter((c) => c.film_id === film.id),
+        ratings: ratings.filter((r) => r.film_id === film.id),
+      }));
     } catch (error) {
       throw new Error("Erreur lors de la récupération des films");
     }
@@ -57,15 +71,27 @@ const filmService = {
   async findFilmById(id: string) {
     try {
       const filmId = normalizeId(id);
-      const film = await db
+      const [film] = await db
         .select()
         .from(filmsTable)
         .where(eq(filmsTable.id, filmId))
         .limit(1);
-      if (!film.length) {
+      if (!film) {
         throw new Error(`Aucun film avec l'id ${filmId} n'a été trouvé`);
       }
-      return film[0];
+
+      const [posts, comments, ratings] = await Promise.all([
+        db.select().from(postsTable).where(eq(postsTable.film_id, filmId)),
+        db.select().from(commentsTable).where(eq(commentsTable.film_id, filmId)),
+        db.select().from(ratingsTable).where(eq(ratingsTable.film_id, filmId)),
+      ]);
+
+      return {
+        ...film,
+        posts,
+        comments,
+        ratings,
+      };
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error("Erreur lors de la récupération dans la base de données");
@@ -91,13 +117,6 @@ const filmService = {
     }
   },
 
-  async rateById(id: string, rating: number) {
-    try {
-
-    } catch (error) {
-
-    }
-  }
 };
 
 export default filmService;
