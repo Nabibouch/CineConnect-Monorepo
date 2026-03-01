@@ -12,3 +12,14 @@ export const addPost = async (req: Request, res: Response) => {
     }
   }
 }
+
+export const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const allPosts = await postService.findAllPosts();
+    return res.status(200).json(allPosts);
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+}
