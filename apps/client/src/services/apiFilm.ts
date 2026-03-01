@@ -1,8 +1,16 @@
+export interface Rating {
+  id: number;
+  user_id: number;
+  film_id: number;
+  rate: number;
+}
+
 export interface Film {
   id: string;
   title: string;
   description: string;
-  release_date: string;
+  released_date: string;
+
 }
 const url = import.meta.env.VITE_API_URL;
 
