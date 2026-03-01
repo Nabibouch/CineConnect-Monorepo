@@ -23,3 +23,15 @@ export const getAllPosts = async (req: Request, res: Response) => {
     }
   }
 }
+
+export const updateOnePost = async (req: Request<{id: string}>, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updatedPost = await postService.updateById(id, req.body);
+    return res.status(200).json({message: "post modifié", updatedPost})
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+}
