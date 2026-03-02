@@ -47,3 +47,15 @@ export const deleteOnePost = async (req: Request<{ id: string }>, res: Response)
     }
   }
 }
+
+export const getOnePost = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const { id } = req.params;
+    const post = await postService.findPostById(id);
+    return res.status(200).json({message:"post trouvé", post: post})
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+}
