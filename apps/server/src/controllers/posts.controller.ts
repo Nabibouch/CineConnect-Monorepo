@@ -35,3 +35,15 @@ export const updateOnePost = async (req: Request<{id: string}>, res: Response) =
     }
   }
 }
+
+export const deleteOnePost = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedPost = await postService.removeById(id);
+    return res.status(200).json({ message: "Post supprimé", post: deleteOnePost })
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+}
