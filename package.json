@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm -r run dev"
+    "dev": "pnpm -r run dev",
+    "watch": "pnpm --filter ./apps/server run watch"
   },
   "keywords": [],
   "author": "",
