@@ -1,71 +1,106 @@
 import db from "../db/index.js";
-import { filmsTable } from "../db/schema.js";
+import {
+  commentsTable,
+  filmsTable,
+  postsTable,
+  ratingsTable,
+} from "../db/schema.js";
 import { eq } from "drizzle-orm";
-
-type updateData = {
-  title?: string;
-  description?: string;
-  release_date?: Date | string;
-};
+import { FilmInput } from "../utils/filmInput.js";
+import { normalizeFilmInput } from "../utils/normalizeFilmInput.js";
+import { normalizeId } from "../utils/normalizeId.js";
 
 const filmService = {
-  async createFilm(data: { title: string; description: string }) {
+  async createFilm(data: FilmInput) {
     try {
-      if (!data.title || !data.description)
+      if (!data.title || !data.description) {
         throw new Error("Tout les champs doivent être remplis");
+      }
 
-      const [film] = await db.insert(filmsTable).values(data).returning();
+      const dataToPush = normalizeFilmInput(
+        data,
+      ) as typeof filmsTable.$inferInsert;
+
+      const [film] = await db.insert(filmsTable).values(dataToPush).returning();
       return film;
     } catch (error) {
-      throw new Error("Erreur inconnue");
+      if (error instanceof Error) throw new Error(error.message);
     }
   },
 
   async findAllFilms() {
     try {
-      const listFilms = await db.select().from(filmsTable);
-      return listFilms;
+      const films = await db.select().from(filmsTable);
+      const posts = await db.select().from(postsTable);
+      const comments = await db.select().from(commentsTable);
+      const ratings = await db.select().from(ratingsTable);
+
+      return films.map((film) => ({
+        ...film,
+        posts: posts.filter((p) => p.film_id === film.id),
+        comments: comments.filter((c) => c.film_id === film.id),
+        ratings: ratings.filter((r) => r.film_id === film.id),
+      }));
     } catch (error) {
       throw new Error("Erreur lors de la récupération des films");
     }
   },
 
-  async updateById(id: string, data: updateData) {
+  async updateById(id: string, data: FilmInput) {
+    const filmId = normalizeId(id);
+
+    if (!Object.keys(data).length) {
+      throw new Error("Aucune donnée envoyée");
+    }
+
+    const dataToUpdate = normalizeFilmInput(data);
+
+    const updatedFilm = await db
+      .update(filmsTable)
+      .set(dataToUpdate)
+      .where(eq(filmsTable.id, filmId))
+      .returning();
+
+    if (!updatedFilm.length) {
+      throw new Error(`Aucun film avec l'id ${id} n'a été trouvé`);
+    }
+
+    return updatedFilm[0];
+  },
+
+  async findFilmById(id: string) {
     try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) throw new Error("L'id n'est pas valide");
-
-      if (!Object.keys(data).length) {
-        throw new Error("Aucune donnée envoyé");
-      }
-
-      const dataToUpdate: Partial<typeof filmsTable.$inferInsert> = {
-         ...(data.title && { title: data.title }),
-         ...(data.description && { description: data.description }),
-         ...(data.release_date && { release_date: new Date(data.release_date) }),
-       };
-
-      const updatedFilm = await db
-        .update(filmsTable)
-        .set(dataToUpdate)
+      const filmId = normalizeId(id);
+      const [film] = await db
+        .select()
+        .from(filmsTable)
         .where(eq(filmsTable.id, filmId))
-        .returning();
-
-      if (!updatedFilm.length) {
-        throw new Error(`Aucun film avec l'id ${id} n'a été trouvé`);
+        .limit(1);
+      if (!film) {
+        throw new Error(`Aucun film avec l'id ${filmId} n'a été trouvé`);
       }
 
-      return updatedFilm[0];
+      const [posts, comments, ratings] = await Promise.all([
+        db.select().from(postsTable).where(eq(postsTable.film_id, filmId)),
+        db.select().from(commentsTable).where(eq(commentsTable.film_id, filmId)),
+        db.select().from(ratingsTable).where(eq(ratingsTable.film_id, filmId)),
+      ]);
+
+      return {
+        ...film,
+        posts,
+        comments,
+        ratings,
+      };
     } catch (error) {
-      throw new Error("Erreur lors de la modification dans la base de donnée");
+      if (error instanceof Error) throw error;
+      throw new Error("Erreur lors de la récupération dans la base de données");
     }
   },
+
   async removeById(id: string) {
     try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) {
-        throw new Error("L'id n'est pas valide");
-      }
+      const filmId = normalizeId(id);
       const deletedFilm = await db
         .delete(filmsTable)
         .where(eq(filmsTable.id, filmId))
@@ -82,63 +117,6 @@ const filmService = {
     }
   },
 
-  async findFilmById(id: string) {
-    try {
-      const filmId = Number(id);
-      if (isNaN(filmId)) {
-        throw new Error("L'id n'est pas valide");
-      }
-      const film = await db
-        .select()
-        .from(filmsTable)
-        .where(eq(filmsTable.id, filmId))
-        .limit(1);
-      if (!film.length) {
-        throw new Error(`Aucun film avec l'id ${filmId} n'a été trouvé`);
-      }
-      return film[0];
-    } catch (error) {
-      if (error instanceof Error) throw error;
-      throw new Error("Erreur lors de la récupération dans la base de données");
-    }
-  },
-
-
-   async importFromOMDB(title: string): Promise<any> {
-  try {
-    const response: Response = await fetch(
-      `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${title}`
-    );
-    const data: any = await response.json();
-
-    if (data.Response === "False") {
-      throw new Error("Film non trouvé");
-    }
-
-    const [film] = await db
-      .insert(filmsTable)
-      .values({
-        title: data.Title as string,
-        description: data.Plot as string,
-        poster_url: data.Poster as string,
-        language: data.Language as string,
-        actors: (data.Actors as string)?.split(", ") || [],
-        awards: (data.Awards as string)?.split(", ") || [],
-        released_date: new Date(data.Released),
-        author: data.Director as string,
-        trailer: null, 
-        // ... autres champs
-      })
-      .returning();
-
-    return film;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error("Erreur lors de l'import : " + error.message);
-    }
-    throw new Error("Erreur inconnue lors de l'import");
-  }
-}
 };
 
 export default filmService;
