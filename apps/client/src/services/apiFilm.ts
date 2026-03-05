@@ -25,10 +25,6 @@ export interface Film {
   id: number;
   title: string;
   description: string;
-<<<<<<< HEAD
-  release_date: string;
-  poster_url: string;
-=======
   poster_url: string | null;
   author: string | null;
   language: string | null;
@@ -40,7 +36,6 @@ export interface Film {
   posts: Post[];
   comments: Comment[];
   ratings: Rating[];
->>>>>>> d2d92f28de1895aaa29c164b0eec7ebcea712594
 }
 const url = import.meta.env.VITE_API_URL;
 

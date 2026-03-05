@@ -77,18 +77,3 @@ export const getOneFilm = async (
     return res.status(500).json({ error: "Erreur inconnue" });
   }
 };
-
-
-export const importFromOMDB = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { title } = req.body;
-    const film = await filmService.importFromOMDB(title);
-    res.json(film);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Erreur inconnue" });
-    }
-  }
-};

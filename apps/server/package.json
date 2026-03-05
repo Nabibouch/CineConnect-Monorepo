@@ -13,7 +13,8 @@
     "watch": "tsc --watch",
     "drizzle:push": "npx drizzle-kit push",
     "drizzle:generate": "npx drizzle-kit generate",
-    "drizzle:migrate": "npx drizzle-kit migrate"
+    "drizzle:migrate": "npx drizzle-kit migrate",
+    "seed:films": "tsx --no-cache src/utils/seed.ts"
   },
   "keywords": [],
   "author": "",
