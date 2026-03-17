@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestRouteImport } from './routes/test'
 import { Route as RegisterRouteImport } from './routes/_register'
 import { Route as RegisterIndexRouteImport } from './routes/_register/index'
-import { Route as RegisterSubjectsRouteImport } from './routes/_register/subjects'
-import { Route as RegisterFilmRouteImport } from './routes/_register/film'
+import { Route as RegisterSubjectsIndexRouteImport } from './routes/_register/subjects/index'
+import { Route as RegisterFilmsIndexRouteImport } from './routes/_register/films/index'
+import { Route as RegisterSubjectsIdRouteImport } from './routes/_register/subjects/$id'
+import { Route as RegisterFilmsIdRouteImport } from './routes/_register/films/$id'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
@@ -29,49 +31,73 @@ const RegisterIndexRoute = RegisterIndexRouteImport.update({
   path: '/',
   getParentRoute: () => RegisterRoute,
 } as any)
-const RegisterSubjectsRoute = RegisterSubjectsRouteImport.update({
-  id: '/subjects',
-  path: '/subjects',
+const RegisterSubjectsIndexRoute = RegisterSubjectsIndexRouteImport.update({
+  id: '/subjects/',
+  path: '/subjects/',
   getParentRoute: () => RegisterRoute,
 } as any)
-const RegisterFilmRoute = RegisterFilmRouteImport.update({
-  id: '/film',
-  path: '/film',
+const RegisterFilmsIndexRoute = RegisterFilmsIndexRouteImport.update({
+  id: '/films/',
+  path: '/films/',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterSubjectsIdRoute = RegisterSubjectsIdRouteImport.update({
+  id: '/subjects/$id',
+  path: '/subjects/$id',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterFilmsIdRoute = RegisterFilmsIdRouteImport.update({
+  id: '/films/$id',
+  path: '/films/$id',
   getParentRoute: () => RegisterRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/test': typeof TestRoute
-  '/film': typeof RegisterFilmRoute
-  '/subjects': typeof RegisterSubjectsRoute
   '/': typeof RegisterIndexRoute
+  '/films/$id': typeof RegisterFilmsIdRoute
+  '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/films': typeof RegisterFilmsIndexRoute
+  '/subjects': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/test': typeof TestRoute
-  '/film': typeof RegisterFilmRoute
-  '/subjects': typeof RegisterSubjectsRoute
   '/': typeof RegisterIndexRoute
+  '/films/$id': typeof RegisterFilmsIdRoute
+  '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/films': typeof RegisterFilmsIndexRoute
+  '/subjects': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_register': typeof RegisterRouteWithChildren
   '/test': typeof TestRoute
-  '/_register/film': typeof RegisterFilmRoute
-  '/_register/subjects': typeof RegisterSubjectsRoute
   '/_register/': typeof RegisterIndexRoute
+  '/_register/films/$id': typeof RegisterFilmsIdRoute
+  '/_register/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/_register/films/': typeof RegisterFilmsIndexRoute
+  '/_register/subjects/': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/test' | '/film' | '/subjects' | '/'
+  fullPaths:
+    | '/test'
+    | '/'
+    | '/films/$id'
+    | '/subjects/$id'
+    | '/films'
+    | '/subjects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/test' | '/film' | '/subjects' | '/'
+  to: '/test' | '/' | '/films/$id' | '/subjects/$id' | '/films' | '/subjects'
   id:
     | '__root__'
     | '/_register'
     | '/test'
-    | '/_register/film'
-    | '/_register/subjects'
     | '/_register/'
+    | '/_register/films/$id'
+    | '/_register/subjects/$id'
+    | '/_register/films/'
+    | '/_register/subjects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -102,33 +128,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterIndexRouteImport
       parentRoute: typeof RegisterRoute
     }
-    '/_register/subjects': {
-      id: '/_register/subjects'
+    '/_register/subjects/': {
+      id: '/_register/subjects/'
       path: '/subjects'
       fullPath: '/subjects'
-      preLoaderRoute: typeof RegisterSubjectsRouteImport
+      preLoaderRoute: typeof RegisterSubjectsIndexRouteImport
       parentRoute: typeof RegisterRoute
     }
-    '/_register/film': {
-      id: '/_register/film'
-      path: '/film'
-      fullPath: '/film'
-      preLoaderRoute: typeof RegisterFilmRouteImport
+    '/_register/films/': {
+      id: '/_register/films/'
+      path: '/films'
+      fullPath: '/films'
+      preLoaderRoute: typeof RegisterFilmsIndexRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/_register/subjects/$id': {
+      id: '/_register/subjects/$id'
+      path: '/subjects/$id'
+      fullPath: '/subjects/$id'
+      preLoaderRoute: typeof RegisterSubjectsIdRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/_register/films/$id': {
+      id: '/_register/films/$id'
+      path: '/films/$id'
+      fullPath: '/films/$id'
+      preLoaderRoute: typeof RegisterFilmsIdRouteImport
       parentRoute: typeof RegisterRoute
     }
   }
 }
 
 interface RegisterRouteChildren {
-  RegisterFilmRoute: typeof RegisterFilmRoute
-  RegisterSubjectsRoute: typeof RegisterSubjectsRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
+  RegisterFilmsIdRoute: typeof RegisterFilmsIdRoute
+  RegisterSubjectsIdRoute: typeof RegisterSubjectsIdRoute
+  RegisterFilmsIndexRoute: typeof RegisterFilmsIndexRoute
+  RegisterSubjectsIndexRoute: typeof RegisterSubjectsIndexRoute
 }
 
 const RegisterRouteChildren: RegisterRouteChildren = {
-  RegisterFilmRoute: RegisterFilmRoute,
-  RegisterSubjectsRoute: RegisterSubjectsRoute,
   RegisterIndexRoute: RegisterIndexRoute,
+  RegisterFilmsIdRoute: RegisterFilmsIdRoute,
+  RegisterSubjectsIdRoute: RegisterSubjectsIdRoute,
+  RegisterFilmsIndexRoute: RegisterFilmsIndexRoute,
+  RegisterSubjectsIndexRoute: RegisterSubjectsIndexRoute,
 }
 
 const RegisterRouteWithChildren = RegisterRoute._addFileChildren(

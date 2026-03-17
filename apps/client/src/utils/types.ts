@@ -7,7 +7,7 @@ export interface Rating {
 
 export interface Comment {
   id: number;
-  content: string;
+  title: string;
   user_id: number;
   film_id: number | null;
   post_id: number | null;
