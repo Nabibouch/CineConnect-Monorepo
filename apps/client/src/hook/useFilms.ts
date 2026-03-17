@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiFilm, type Film } from '../services/apiFilm';
+import { apiFilm } from '../services/apiFilm';
 import { useMemo } from 'react';
+import { getAverageRating } from '../utils/averageRating';
 
 export const useFilms = () => {
   return useQuery({
@@ -10,9 +11,12 @@ export const useFilms = () => {
   });
 };
 
-const getAverageRating = (film: Film): number => {
-  if (!film.ratings.length) return 0;
-  return film.ratings.reduce((sum, r) => sum + r.rate, 0) / film.ratings.length;
+export const useOneFilm = (id: string) => {
+  return useQuery({
+    queryKey: ['film', id],
+    queryFn: () => apiFilm.getFilmById(id),
+    staleTime: 10 * 60 * 1000,
+  });
 };
 
 export const useFilmsHomepage = () => {
@@ -27,7 +31,7 @@ export const useFilmsHomepage = () => {
 
     const topRated = [...films]
       .sort((a, b) => getAverageRating(b) - getAverageRating(a))
-      .slice(0, 3);
+      .slice(0, 8);
 
     return { lastFilm, topRated };
   }, [films]);
