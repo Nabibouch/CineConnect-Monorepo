@@ -19,22 +19,22 @@ const FilmCard = ({ film }: FilmCardProps) => {
       <p className="text-sm text-muted-foreground overflow-hidden [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical]">
         {film.description}
       </p>
-      <p className="text-sm">
-        <span className="font-medium">Auteur :</span>{" "}
-        {film.author || "Inconnu"}
-      </p>
       <div className="flex justify-between">
+        <p className="text-sm">
+          <span className="font-medium">Auteur :</span>{" "}
+          {film.author || "Inconnu"}
+        </p>
         <p className="text-sm">
           <span className="font-medium">Date de sortie :</span>{" "}
           {film.released_date
             ? new Date(film.released_date).toLocaleDateString()
             : "Inconnue"}
         </p>
-        <p className="text-sm">
-          <span className="font-medium">Note :</span>{" "}
-          {getAverageRating(film) || "Inconnue"}
-        </p>
       </div>
+      <p className="text-sm">
+        <span className="font-medium">Note :</span>{" "}
+        {getAverageRating(film) || "Inconnue"}
+      </p>
     </article>
   );
 };
