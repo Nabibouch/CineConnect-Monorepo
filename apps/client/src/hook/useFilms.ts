@@ -11,6 +11,13 @@ export const useFilms = () => {
   });
 };
 
+export const useOneFilm = (id: string) => {
+  return useQuery({
+    queryKey: ['film', id],
+    queryFn: () => apiFilm.getFilmById(id),
+    staleTime: 10 * 60 * 1000,
+  });
+};
 
 export const useFilmsHomepage = () => {
   const { data: films, ...rest } = useFilms();
