@@ -9,25 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as FilmRouteImport } from './routes/film'
+import { Route as TestRouteImport } from './routes/test'
 import { Route as RegisterRouteImport } from './routes/_register'
 import { Route as RegisterIndexRouteImport } from './routes/_register/index'
+import { Route as RegisterSubjectsIndexRouteImport } from './routes/_register/subjects/index'
+import { Route as RegisterFilmsIndexRouteImport } from './routes/_register/films/index'
+import { Route as RegisterSubjectsIdRouteImport } from './routes/_register/subjects/$id'
+import { Route as RegisterFilmsIdRouteImport } from './routes/_register/films/$id'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FilmRoute = FilmRouteImport.update({
-  id: '/film',
-  path: '/film',
+const TestRoute = TestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -39,60 +31,87 @@ const RegisterIndexRoute = RegisterIndexRouteImport.update({
   path: '/',
   getParentRoute: () => RegisterRoute,
 } as any)
+const RegisterSubjectsIndexRoute = RegisterSubjectsIndexRouteImport.update({
+  id: '/subjects/',
+  path: '/subjects/',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterFilmsIndexRoute = RegisterFilmsIndexRouteImport.update({
+  id: '/films/',
+  path: '/films/',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterSubjectsIdRoute = RegisterSubjectsIdRouteImport.update({
+  id: '/subjects/$id',
+  path: '/subjects/$id',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterFilmsIdRoute = RegisterFilmsIdRouteImport.update({
+  id: '/films/$id',
+  path: '/films/$id',
+  getParentRoute: () => RegisterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/film': typeof FilmRoute
-  '/signin': typeof SigninRoute
-  '/signup': typeof SignupRoute
+  '/test': typeof TestRoute
+  '/': typeof RegisterIndexRoute
+  '/films/$id': typeof RegisterFilmsIdRoute
+  '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/films': typeof RegisterFilmsIndexRoute
+  '/subjects': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/film': typeof FilmRoute
-  '/signin': typeof SigninRoute
-  '/signup': typeof SignupRoute
+  '/test': typeof TestRoute
+  '/': typeof RegisterIndexRoute
+  '/films/$id': typeof RegisterFilmsIdRoute
+  '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/films': typeof RegisterFilmsIndexRoute
+  '/subjects': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_register': typeof RegisterRouteWithChildren
-  '/film': typeof FilmRoute
-  '/signin': typeof SigninRoute
-  '/signup': typeof SignupRoute
+  '/test': typeof TestRoute
+  '/_register/': typeof RegisterIndexRoute
+  '/_register/films/$id': typeof RegisterFilmsIdRoute
+  '/_register/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/_register/films/': typeof RegisterFilmsIndexRoute
+  '/_register/subjects/': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/film' | '/signin' | '/signup'
+  fullPaths:
+    | '/test'
+    | '/'
+    | '/films/$id'
+    | '/subjects/$id'
+    | '/films'
+    | '/subjects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/film' | '/signin' | '/signup'
-  id: '__root__' | '/' | '/film' | '/signin' | '/signup'
+  to: '/test' | '/' | '/films/$id' | '/subjects/$id' | '/films' | '/subjects'
+  id:
+    | '__root__'
+    | '/_register'
+    | '/test'
+    | '/_register/'
+    | '/_register/films/$id'
+    | '/_register/subjects/$id'
+    | '/_register/films/'
+    | '/_register/subjects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRouteWithChildren
-  FilmRoute: typeof FilmRoute
-  SigninRoute: typeof SigninRoute
-  SignupRoute: typeof SignupRoute
+  TestRoute: typeof TestRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/film': {
-      id: '/film'
-      path: '/film'
-      fullPath: '/film'
-      preLoaderRoute: typeof FilmRouteImport
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_register': {
@@ -109,15 +128,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterIndexRouteImport
       parentRoute: typeof RegisterRoute
     }
+    '/_register/subjects/': {
+      id: '/_register/subjects/'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof RegisterSubjectsIndexRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/_register/films/': {
+      id: '/_register/films/'
+      path: '/films'
+      fullPath: '/films'
+      preLoaderRoute: typeof RegisterFilmsIndexRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/_register/subjects/$id': {
+      id: '/_register/subjects/$id'
+      path: '/subjects/$id'
+      fullPath: '/subjects/$id'
+      preLoaderRoute: typeof RegisterSubjectsIdRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/_register/films/$id': {
+      id: '/_register/films/$id'
+      path: '/films/$id'
+      fullPath: '/films/$id'
+      preLoaderRoute: typeof RegisterFilmsIdRouteImport
+      parentRoute: typeof RegisterRoute
+    }
   }
 }
 
 interface RegisterRouteChildren {
   RegisterIndexRoute: typeof RegisterIndexRoute
+  RegisterFilmsIdRoute: typeof RegisterFilmsIdRoute
+  RegisterSubjectsIdRoute: typeof RegisterSubjectsIdRoute
+  RegisterFilmsIndexRoute: typeof RegisterFilmsIndexRoute
+  RegisterSubjectsIndexRoute: typeof RegisterSubjectsIndexRoute
 }
 
 const RegisterRouteChildren: RegisterRouteChildren = {
   RegisterIndexRoute: RegisterIndexRoute,
+  RegisterFilmsIdRoute: RegisterFilmsIdRoute,
+  RegisterSubjectsIdRoute: RegisterSubjectsIdRoute,
+  RegisterFilmsIndexRoute: RegisterFilmsIndexRoute,
+  RegisterSubjectsIndexRoute: RegisterSubjectsIndexRoute,
 }
 
 const RegisterRouteWithChildren = RegisterRoute._addFileChildren(
@@ -126,9 +181,7 @@ const RegisterRouteWithChildren = RegisterRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRouteWithChildren,
-  FilmRoute: FilmRoute,
-  SigninRoute: SigninRoute,
-  SignupRoute: SignupRoute,
+  TestRoute: TestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

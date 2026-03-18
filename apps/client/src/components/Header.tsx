@@ -1,19 +1,19 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, Search, User } from "lucide-react";
+import { Bell, MessageSquareMore, User } from "lucide-react";
 
 const Header = () => {
   return (
-    <header className="flex justify-between items-center px-4 text-white bg-slate-800 pt-6">
-      <span className="text-[40px] text-pink-500 font-bold">CinéConnect</span>
-      <nav className="flex gap-10">
-        <Link to="/"> Accueil </Link>
-        <Link to="/film"> Films </Link>
-        <span>Favoris</span>
+    <header className="flex justify-between items-center px-12 text-white bg-slate-800">
+      <span className="text-[40px]  font-bold">MOVIE<span className="text-primary">TUNE</span></span>
+      <nav className="flex gap-10 text-[18px]">
+        <Link to="/"> Home </Link>
+        <Link to="/films"> Movies </Link>
+        <Link to="/subjects">Subjects</Link>
       </nav>
-      <div className="flex gap-10">
-        <Search color="white" />
-        <Bell color="white" />
-        <User color="white" />
+      <div className="flex gap-10 text-primary">
+        <MessageSquareMore />
+        <Bell />
+        <User />
       </div>
     </header>
   );

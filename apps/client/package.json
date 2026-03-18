@@ -13,6 +13,7 @@
 
   },
   "dependencies": {
+    "@fontsource/bebas-neue": "^5.2.7",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-query": "^5.90.20",

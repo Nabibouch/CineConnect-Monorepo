@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import db from "../db/index.js";
-import { postsTable } from "../db/schema.js";
+import { commentsTable, postsTable } from "../db/schema.js";
 import { normalizeId } from "../utils/normalizeId.js";
 import { CreatePostInput, UpdatePostInput } from "../utils/postInput.js";
 
@@ -20,8 +20,13 @@ const postService = {
 
   async findAllPosts() {
     try {
-      const list = await db.select().from(postsTable);
-      return list;
+      const posts = await db.select().from(postsTable);
+      const comments = await db.select().from(commentsTable);
+
+      return posts.map((post) => ({
+        ...post,
+        comments: comments.filter((c) => c.post_id === post.id),
+      }));
     } catch (error) {
       throw new Error("Erreur lors de la récupération des posts");
     }
@@ -38,7 +43,16 @@ const postService = {
       if (!post) {
         throw new Error(`Aucun post avec l'id ${postId} n'a été trouvé`);
       }
-      return post;
+
+      const comments = await db
+        .select()
+        .from(commentsTable)
+        .where(eq(commentsTable.post_id, postId));
+
+      return {
+        ...post,
+        comments,
+      };
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error("Erreur lors de la récupération du post");
