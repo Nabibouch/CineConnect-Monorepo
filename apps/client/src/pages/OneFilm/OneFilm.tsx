@@ -1,11 +1,18 @@
 
-import { useParams } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { useOneFilm } from '../../hook/useFilms';
 import { getAverageRating } from '../../utils/averageRating';
+import { useSendComs } from '../../hook/useSendComs';
+import { useRateFilm } from '../../hook/useRateFilm';
+import { useState } from 'react';
 
 const OneFilm = () => {
     const { id } = useParams({ from: '/_register/films/$id' });
     const { data, isLoading, isError } = useOneFilm(id);
+    const [comment, setComment] = useState('');
+    const [rate, setRate] = useState<number>(0);
+    const { mutate: sendComment, isPending } = useSendComs();
+    const { mutate: rateFilm, isPending: isRatePending } = useRateFilm();
 
     if (isLoading) return <div className="p-4">Chargement...</div>;
     if (isError) return <div className="p-4 text-red-500">Erreur lors du chargement</div>;
@@ -64,9 +71,9 @@ const OneFilm = () => {
                 {film.posts?.length ? (
                     <ul className="space-y-2">
                         {film.posts.map((post) => (
-                            <li key={post.id} className="p-3 border rounded-xl">
+                            <Link to={`/subjects/${post.id}`} key={post.id} className="p-3 border rounded-xl">
                                 {post.title}
-                            </li>
+                            </Link>
                         ))}
                     </ul>
                 ) : (
@@ -75,19 +82,58 @@ const OneFilm = () => {
             </div>
 
             <div>
+                <h2 className="text-xl font-semibold mb-2">Noter ce film</h2>
+                <div className="flex items-center gap-4 mb-6">
+                    <select 
+                        value={rate} 
+                        onChange={(e) => setRate(Number(e.target.value))}
+                        className="p-2 border rounded-xl"
+                    >
+                        <option value={0}>Sélectionner une note</option>
+                        <option value={1}>1 - Mauvais</option>
+                        <option value={2}>2 - Bof</option>
+                        <option value={3}>3 - Moyen</option>
+                        <option value={4}>4 - Bon</option>
+                        <option value={5}>5 - Excellent</option>
+                    </select>
+                    <button 
+                        disabled={isRatePending || rate === 0}
+                        onClick={() => rateFilm({ rate, film_id: Number(id), user_id: 1 }, { onSuccess: () => setRate(0) })}
+                        className="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-xl disabled:bg-gray-300"
+                    >
+                        {isRatePending ? 'Envoi...' : 'Noter'}
+                    </button>
+                </div>
+            </div>
+
+            <div>
                 <h2 className="text-xl font-semibold mb-2">Commentaires</h2>
                 {film.comments?.length ? (
                     <ul className="space-y-2">
                         {film.comments.map((comment) => (
-                            <li key={comment.id} className="p-3 border rounded-xl">
+                            <Link to={`/comments/${comment.id}`} key={comment.id} className="p-3 border rounded-xl">
                                 {comment.title}
-                            </li>
+                            </Link>
                         ))}
                     </ul>
                 ) : (
                     <p>Aucun commentaire</p>
                 )}
+                <div>
+                    <input type="text" placeholder="Ajouter un commentaire" value={comment} onChange={(e) => setComment(e.target.value)} />
+                    <button 
+                        disabled={isPending || !comment.trim()} 
+                        onClick={() => sendComment(
+                            { title: comment, film_id: Number(id), user_id: 1 },
+                            { onSuccess: () => setComment('') }
+                        )}
+                        className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-xl disabled:bg-gray-400"
+                    >
+                        {isPending ? 'Envoi...' : 'Ajouter'}
+                    </button>
+                </div>
             </div>
+
         </div>
     );
 }
