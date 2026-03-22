@@ -1,17 +1,15 @@
-
 import { Link, useParams } from '@tanstack/react-router';
 import { useOneFilm } from '../../hook/useFilms';
 import { getAverageRating } from '../../utils/averageRating';
-import { useSendComs } from '../../hook/useSendComs';
 import { useRateFilm } from '../../hook/useRateFilm';
 import { useState } from 'react';
+import { NewSubject } from './components/NewSubject';
+import { NewCom } from '../../components/NewCom';
 
 const OneFilm = () => {
     const { id } = useParams({ from: '/_register/films/$id' });
     const { data, isLoading, isError } = useOneFilm(id);
-    const [comment, setComment] = useState('');
     const [rate, setRate] = useState<number>(0);
-    const { mutate: sendComment, isPending } = useSendComs();
     const { mutate: rateFilm, isPending: isRatePending } = useRateFilm();
 
     if (isLoading) return <div className="p-4">Chargement...</div>;
@@ -71,7 +69,7 @@ const OneFilm = () => {
                 {film.posts?.length ? (
                     <ul className="space-y-2">
                         {film.posts.map((post) => (
-                            <Link to={`/subjects/${post.id}`} key={post.id} className="p-3 border rounded-xl">
+                            <Link to="/subjects/$id" params={{ id: post.id.toString() }} key={post.id} className="block p-3 border rounded-xl hover:bg-gray-100 transition duration-200">
                                 {post.title}
                             </Link>
                         ))}
@@ -84,8 +82,8 @@ const OneFilm = () => {
             <div>
                 <h2 className="text-xl font-semibold mb-2">Noter ce film</h2>
                 <div className="flex items-center gap-4 mb-6">
-                    <select 
-                        value={rate} 
+                    <select
+                        value={rate}
                         onChange={(e) => setRate(Number(e.target.value))}
                         className="p-2 border rounded-xl"
                     >
@@ -96,7 +94,7 @@ const OneFilm = () => {
                         <option value={4}>4 - Bon</option>
                         <option value={5}>5 - Excellent</option>
                     </select>
-                    <button 
+                    <button
                         disabled={isRatePending || rate === 0}
                         onClick={() => rateFilm({ rate, film_id: Number(id), user_id: 1 }, { onSuccess: () => setRate(0) })}
                         className="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-xl disabled:bg-gray-300"
@@ -106,34 +104,8 @@ const OneFilm = () => {
                 </div>
             </div>
 
-            <div>
-                <h2 className="text-xl font-semibold mb-2">Commentaires</h2>
-                {film.comments?.length ? (
-                    <ul className="space-y-2">
-                        {film.comments.map((comment) => (
-                            <Link to={`/comments/${comment.id}`} key={comment.id} className="p-3 border rounded-xl">
-                                {comment.title}
-                            </Link>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>Aucun commentaire</p>
-                )}
-                <div>
-                    <input type="text" placeholder="Ajouter un commentaire" value={comment} onChange={(e) => setComment(e.target.value)} />
-                    <button 
-                        disabled={isPending || !comment.trim()} 
-                        onClick={() => sendComment(
-                            { title: comment, film_id: Number(id), user_id: 1 },
-                            { onSuccess: () => setComment('') }
-                        )}
-                        className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-xl disabled:bg-gray-400"
-                    >
-                        {isPending ? 'Envoi...' : 'Ajouter'}
-                    </button>
-                </div>
-            </div>
-
+            <NewCom film={film} />
+            <NewSubject />
         </div>
     );
 }
