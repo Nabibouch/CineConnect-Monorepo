@@ -29,6 +29,13 @@
       "when": 1771941010884,
       "tag": "0003_flimsy_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774269374576,
+      "tag": "0004_third_paladin",
+      "breakpoints": true
     }
   ]
 }

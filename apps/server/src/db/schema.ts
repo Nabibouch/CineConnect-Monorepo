@@ -71,4 +71,23 @@ export const categorizationTable = pgTable("categorization", {
     .references(() => categoriesTable.id)
     .notNull(),
 });
+
+export const conversationsTable = pgTable("conversations", {
+  id:         integer().primaryKey().generatedAlwaysAsIdentity(),
+  created_at: timestamp().defaultNow(),
+});
+
+export const conversationMembersTable = pgTable("conversation_members", {
+  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  conversation_id: integer().references(() => conversationsTable.id).notNull(),
+  user_id:         integer().references(() => usersTable.id).notNull(),
+});
+
+export const messagesTable = pgTable("messages", {
+  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  conversation_id: integer().references(() => conversationsTable.id).notNull(),
+  sender_id:       integer().references(() => usersTable.id).notNull(),
+  content:         text().notNull(),
+  created_at:      timestamp().defaultNow(),
+});
 //

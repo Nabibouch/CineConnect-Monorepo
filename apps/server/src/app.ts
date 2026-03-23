@@ -3,6 +3,7 @@ import cors from "cors";
 import router from "./routes/global.route.js";
 import usersRouter from './routes/users.route.js';
 import filmsRouter from './routes/films.route.js';
+import conversationsRouter from './routes/conversations.route.js'
 
 const app = express();
 
@@ -22,4 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 app.use('/users', usersRouter);
 app.use('/films', filmsRouter);
+app.use('/conversations', conversationsRouter);
+
 export default app;
