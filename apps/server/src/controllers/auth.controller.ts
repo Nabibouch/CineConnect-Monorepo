@@ -26,6 +26,14 @@ export const signIn = async (req: Request, res: Response) => {
     const userWithoutPassword = await userService.connexion({ email, password });
     if (!userWithoutPassword) return res.status(400).json({ error: "Utilisateur non trouvé" });
 
+    // 👇 Stocker l'user dans un cookie httpOnly
+    res.cookie("user", JSON.stringify(userWithoutPassword), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // HTTPS en prod uniquement
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
+    });
+
     return res.status(200).json({
       message: "Connexion réussie",
       user: userWithoutPassword,
