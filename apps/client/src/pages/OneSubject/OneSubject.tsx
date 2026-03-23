@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router';
 import { useOneSubject } from '../../hook/useSubjects';
+import { NewCom } from '../../components/NewCom';
 
 export default function SubjectDetailsPage() {
     const { id } = useParams({ from: '/_register/subjects/$id' });
@@ -42,6 +43,7 @@ export default function SubjectDetailsPage() {
                     <p>Aucun commentaire</p>
                 )}
             </div>
+            <NewCom subject={subject} />
         </div>
     );
 }
