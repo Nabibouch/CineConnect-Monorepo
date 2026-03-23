@@ -10,14 +10,13 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
-
   },
   "dependencies": {
     "@fontsource/bebas-neue": "^5.2.7",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-query": "^5.90.20",
-    "@tanstack/react-router": "^1.140.5",
+    "@tanstack/react-router": "^1.167.4",
     "@tanstack/react-router-devtools": "^1.140.5",
     "@tanstack/zod-form-adapter": "^0.42.1",
     "axios": "^1.13.4",
