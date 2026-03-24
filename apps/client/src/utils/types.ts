@@ -38,3 +38,16 @@ export interface Film {
   ratings: Rating[];
 }
 
+export interface Message {
+  id: number;
+  conversation_id: number;
+  sender_id: number;
+  content: string;
+  created_at: string;
+}
+
+export interface Conversation {
+  id: number;
+  created_at: string;
+}
+

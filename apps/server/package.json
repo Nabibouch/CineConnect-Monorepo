@@ -5,14 +5,16 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "build": "tsc",
     "dev": "nodemon dist/index.js",
     "start": "pnpm run build && node dist/index.js",
     "watch": "tsc --watch",
     "drizzle:push": "npx drizzle-kit push",
     "drizzle:generate": "npx drizzle-kit generate",
-    "drizzle:migrate": "npx drizzle-kit migrate"
+    "drizzle:migrate": "npx drizzle-kit migrate",
+    "seed:films": "tsx --no-cache src/utils/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,10 +22,14 @@
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
     "@types/argon2": "^0.15.4",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.8",
     "@types/pg": "^8.16.0",
+    "@types/ws": "^8.18.1",
+    "@vitest/coverage-v8": "4.0.18",
     "drizzle-kit": "^0.31.8",
     "nodemon": "^3.1.11",
     "tsx": "^4.21.0",
@@ -31,10 +37,15 @@
   },
   "dependencies": {
     "argon2": "^0.44.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
-    "pg": "^8.17.1"
+    "pg": "^8.17.1",
+    "postgres": "^3.4.8",
+    "vitest": "^4.0.18",
+    "ws": "^8.20.0",
+    "zod": "^4.3.6"
   }
 }

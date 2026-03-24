@@ -70,11 +70,11 @@ const userService = {
         .from(usersTable)
         .where(eq(usersTable.id, userId));
 
-      return user;
-    } catch (error) {
-      throw new Error("Erreur lors de la récupération de l'utilisateur");
-    }
-  },
+    return user;
+  } catch (error) {
+    throw new Error("Erreur lors de la récupération de l'utilisateur par email");
+  }
+},
 
   async connexion(data: { email: string; password: string }) {
     try {

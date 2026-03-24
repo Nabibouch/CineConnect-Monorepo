@@ -3,4 +3,5 @@ packages:
   - libs/*
 
 ignoredBuiltDependencies:
+  - argon2
   - esbuild

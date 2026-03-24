@@ -10,11 +10,14 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get("/:id", getOneUser);
+
+//routes fixes
 router.post("/signin", signIn);
 router.post("/signup", signUp);
+router.get("/", getAllUsers);
+
+//routes dynamiques
+router.get("/:id", getOneUser);
 router.put("/:id", updateOneUser);
 router.delete("/:id", deleteOneUser);
-
 export default router;
