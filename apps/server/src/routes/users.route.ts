@@ -6,7 +6,10 @@ import {
   signIn,
   signUp,
   updateOneUser,
+  getMe,
+  logOut
 } from "../controllers/auth.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -14,6 +17,8 @@ const router = express.Router();
 //routes fixes
 router.post("/signin", signIn);
 router.post("/signup", signUp);
+router.get("/me", authMiddleware, getMe);   
+router.post("/logout", authMiddleware, logOut);
 router.get("/", getAllUsers);
 
 //routes dynamiques
