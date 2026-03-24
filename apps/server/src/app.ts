@@ -3,7 +3,8 @@ import cors from "cors";
 import router from "./routes/global.route.js";
 import usersRouter from './routes/users.route.js';
 import filmsRouter from './routes/films.route.js';
-import conversationsRouter from './routes/conversations.route.js'
+import conversationsRouter from './routes/conversations.route.js';
+import cookieParser from 'cookie-parser'
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use(cookieParser());
 app.use("/api", router);
 app.use('/users', usersRouter);
 app.use('/films', filmsRouter);
