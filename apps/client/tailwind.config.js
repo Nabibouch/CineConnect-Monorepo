@@ -22,6 +22,8 @@ export default {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
       		slayer: "hsl(var(--slayer))",
+			light_slayer: 'hsl(var(--light_slayer))',
+			
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
