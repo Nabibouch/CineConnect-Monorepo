@@ -1,15 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Bell, MessageSquareMore, User, LogOut } from "lucide-react";
-import { useAuth } from "../hook/useAuth";
+import { Link } from "@tanstack/react-router";
+import { Bell, MessageSquareMore, User } from "lucide-react";
+import { useMe } from "../hook/useUsers";
 
 const Header = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate({ to: "/signin" });
-  };
+  const { data: me } = useMe();
 
   return (
     <header className="flex justify-between items-center px-12 text-white bg-slayer sticky top-0 z-50">
@@ -21,18 +15,17 @@ const Header = () => {
         <Link to="/films">Movies</Link>
         <Link to="/subjects">Subjects</Link>
       </nav>
-      <div className="flex gap-10 text-primary items-center">
-        <MessageSquareMore />
+      <div className="flex gap-10 text-primary">
+        <Link to="/messages">
+          <MessageSquareMore />
+        </Link>
         <Bell />
-        {user ? (
-          <>
-            <span className="text-sm">{user.username}</span>
-            <LogOut className="cursor-pointer" onClick={handleLogout} />
-          </>
-        ) : (
-          <Link to="/signin">
+        {me ? (
+          <Link to="/profil/$id" params={{ id: String(me.id) }}>
             <User />
           </Link>
+        ) : (
+          <User className="opacity-60" />
         )}
       </div>
     </header>
