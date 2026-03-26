@@ -1,0 +1,1 @@
+ALTER TABLE "films" DROP COLUMN "author";
