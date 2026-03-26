@@ -32,8 +32,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --slayer: 271 76% 20%; 
-    --light_slayer: 262 76% 42%;
+    --slayer: 271 76% 13%; 
+    --toxic:  271 76% 4%;
   }
   .dark {
     --background: 222.2 84% 4.9%;

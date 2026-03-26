@@ -23,6 +23,7 @@ export default {
   			foreground: 'hsl(var(--foreground))',
       		slayer: "hsl(var(--slayer))",
 			light_slayer: 'hsl(var(--light_slayer))',
+			toxic:'hsl(var(--toxic))',
 			
   			card: {
   				DEFAULT: 'hsl(var(--card))',

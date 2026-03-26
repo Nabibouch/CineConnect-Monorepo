@@ -17,10 +17,7 @@ const Footer = () => {
                 <Footerlinks title='' title2="article" links={["Blogs","careers",]}/>
             </div>          
                      
-                        
-
         </footer>
     )
 };
-
 export default Footer;

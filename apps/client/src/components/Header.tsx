@@ -12,7 +12,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-between items-center px-12 text-white bg-slayer">
+    <header className="flex justify-between items-center px-12 text-white bg-slayer sticky top-0 z-50">
       <span className="text-[40px] font-bold">
         MOVIE<span className="text-primary">TUNE</span>
       </span>
