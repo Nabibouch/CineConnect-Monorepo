@@ -9,6 +9,7 @@ const Header = () => {
         <Link to="/"> Home </Link>
         <Link to="/films"> Movies </Link>
         <Link to="/subjects">Subjects</Link>
+        <Link to="/messages">Messages</Link>
       </nav>
       <div className="flex gap-10 text-primary">
         <MessageSquareMore />

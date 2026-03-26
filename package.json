@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "test": "vitest",
-    "dev": "pnpm -r run dev"
+    "dev": "pnpm -r run dev",
+    "watch": "pnpm --filter ./apps/server run watch"
   },
   "keywords": [],
   "author": "",
