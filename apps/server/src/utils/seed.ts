@@ -1,5 +1,5 @@
 import db from "../db/index.js";
-import { filmsTable } from "../db/schema.js";
+import { filmsTable, ratingsTable } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import * as dotenv from "dotenv";
 
@@ -15,12 +15,12 @@ function randomImdbId(): string {
   return `tt${String(num).padStart(7, "0")}`;
 }
 
-async function fetchFromOMDB(imdbId: string): Promise<any> {
-  const response = await fetch(
-    `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbId}`
-  );
-  return response.json();
-}
+// async function fetchFromOMDB(imdbId: string): Promise<any> {
+//   const response = await fetch(
+//     `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbId}`
+//   );
+//   return response.json();
+// }
 
 async function filmExistsInDB(title: string): Promise<boolean> {
   const existing = await db
@@ -31,51 +31,120 @@ async function filmExistsInDB(title: string): Promise<boolean> {
   return existing.length > 0;
 }
 
+// async function seedFilms() {
+//   let imported = 0;
+//   let attempts = 0;
+//   const maxAttempts = TARGET * 10; // évite boucle infinie
+
+//   console.log(`🎬 Début de l'import de ${TARGET} films...`);
+
+//   while (imported < TARGET && attempts < maxAttempts) {
+//     attempts++;
+//     const imdbId = randomImdbId();
+
+//     try {
+//       const data = await fetchFromOMDB(imdbId);
+
+//       // Ignorer si non trouvé ou pas un film
+//       if (data.Response === "False" || data.Type !== "movie") continue;
+
+//       // Vérifier doublon
+//       const exists = await filmExistsInDB(data.Title);
+//       if (exists) {
+//         console.log(`⏭️  Déjà en DB : ${data.Title}`);
+//         continue;
+//       }
+
+//       await db.insert(filmsTable).values({
+//         title: data.Title,
+//         description: data.Plot !== "N/A" ? data.Plot : null,
+//         poster_url: data.Poster !== "N/A" ? data.Poster : null,
+//         language: data.Language !== "N/A" ? data.Language : null,
+//         actors: data.Actors !== "N/A" ? data.Actors.split(", ") : [],
+//         awards: data.Awards !== "N/A" ? data.Awards.split(". ") : [],
+//         released_date: data.Released !== "N/A" ? new Date(data.Released) : null,
+//         author: data.Director !== "N/A" ? data.Director : null,
+//         trailer: null,
+//       });
+
+//       imported++;
+//       console.log(`✅ [${imported}/${TARGET}] Importé : ${data.Title} (${imdbId})`);
+
+//     } catch (error) {
+//       console.error(`❌ Erreur pour ${imdbId}:`, error);
+//     }
+//   }
+
+//   console.log(`\n🏁 Terminé ! ${imported} films importés en ${attempts} tentatives.`);
+//   process.exit(0);
+// }
+
+// seedFilms();
+
+async function fetchFromTMDB(page: number): Promise<any> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}&page=${page}`
+  );
+  return res.json();
+}
+
+function getPoster(path: string | null) {
+  return path ? `https://image.tmdb.org/t/p/w500${path}` : null;
+}
+
 async function seedFilms() {
   let imported = 0;
   let attempts = 0;
-  const maxAttempts = TARGET * 10; // évite boucle infinie
+  let page = 1;
 
-  console.log(`🎬 Début de l'import de ${TARGET} films...`);
+  const maxAttempts = TARGET * 10;
+
+  console.log(`🎬 Début de l'import TMDB de ${TARGET} films...`);
 
   while (imported < TARGET && attempts < maxAttempts) {
     attempts++;
-    const imdbId = randomImdbId();
 
     try {
-      const data = await fetchFromOMDB(imdbId);
+      const data = await fetchFromTMDB(page);
 
-      // Ignorer si non trouvé ou pas un film
-      if (data.Response === "False" || data.Type !== "movie") continue;
+      for (const movie of data.results) {
+        if (imported >= TARGET) break;
 
-      // Vérifier doublon
-      const exists = await filmExistsInDB(data.Title);
-      if (exists) {
-        console.log(`⏭️  Déjà en DB : ${data.Title}`);
-        continue;
+        // Vérifier doublon
+        const exists = await filmExistsInDB(movie.title);
+        if (exists) {
+          console.log(`⏭️ Déjà en DB : ${movie.title}`);
+          continue;
+        }
+
+        await db.insert(filmsTable).values({
+          title: movie.title,
+          description: movie.overview || null,
+          poster_url: getPoster(movie.poster_path),
+          language: movie.original_language || null,
+          actors: [],
+          awards: [],
+          released_date: movie.release_date
+            ? new Date(movie.release_date)
+            : null,
+          author: null,
+          trailer: null,
+          vote_average: movie.vote_average,
+        });
+
+
+        imported++;
+        console.log(`✅ [${imported}/${TARGET}] Importé : ${movie.title}`);
       }
 
-      await db.insert(filmsTable).values({
-        title: data.Title,
-        description: data.Plot !== "N/A" ? data.Plot : null,
-        poster_url: data.Poster !== "N/A" ? data.Poster : null,
-        language: data.Language !== "N/A" ? data.Language : null,
-        actors: data.Actors !== "N/A" ? data.Actors.split(", ") : [],
-        awards: data.Awards !== "N/A" ? data.Awards.split(". ") : [],
-        released_date: data.Released !== "N/A" ? new Date(data.Released) : null,
-        author: data.Director !== "N/A" ? data.Director : null,
-        trailer: null,
-      });
-
-      imported++;
-      console.log(`✅ [${imported}/${TARGET}] Importé : ${data.Title} (${imdbId})`);
+      page++; // 🔥 IMPORTANT → passe à la page suivante
 
     } catch (error) {
-      console.error(`❌ Erreur pour ${imdbId}:`, error);
+      console.error(`❌ Erreur page ${page}:`, error);
     }
   }
 
-  console.log(`\n🏁 Terminé ! ${imported} films importés en ${attempts} tentatives.`);
+  console.log(`\n🏁 Terminé ! ${imported} films importés en ${attempts} pages.`);
   process.exit(0);
 }
 

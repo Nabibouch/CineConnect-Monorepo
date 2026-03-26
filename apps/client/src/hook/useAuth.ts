@@ -14,7 +14,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/users/me`, {
+    fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
       credentials: "include",
     })
       .then((res) => res.json())
