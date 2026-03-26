@@ -19,6 +19,7 @@ import { Route as RegisterMessagesRouteImport } from './routes/_register/message
 import { Route as RegisterSubjectsIndexRouteImport } from './routes/_register/subjects/index'
 import { Route as RegisterFilmsIndexRouteImport } from './routes/_register/films/index'
 import { Route as RegisterSubjectsIdRouteImport } from './routes/_register/subjects/$id'
+import { Route as RegisterProfilIdRouteImport } from './routes/_register/profil/$id'
 import { Route as RegisterFilmsIdRouteImport } from './routes/_register/films/$id'
 
 const TestRoute = TestRouteImport.update({
@@ -70,6 +71,11 @@ const RegisterSubjectsIdRoute = RegisterSubjectsIdRouteImport.update({
   path: '/subjects/$id',
   getParentRoute: () => RegisterRoute,
 } as any)
+const RegisterProfilIdRoute = RegisterProfilIdRouteImport.update({
+  id: '/profil/$id',
+  path: '/profil/$id',
+  getParentRoute: () => RegisterRoute,
+} as any)
 const RegisterFilmsIdRoute = RegisterFilmsIdRouteImport.update({
   id: '/films/$id',
   path: '/films/$id',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof RegisterMessagesRoute
   '/': typeof RegisterIndexRoute
   '/films/$id': typeof RegisterFilmsIdRoute
+  '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
   '/films': typeof RegisterFilmsIndexRoute
   '/subjects': typeof RegisterSubjectsIndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/messages': typeof RegisterMessagesRoute
   '/': typeof RegisterIndexRoute
   '/films/$id': typeof RegisterFilmsIdRoute
+  '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
   '/films': typeof RegisterFilmsIndexRoute
   '/subjects': typeof RegisterSubjectsIndexRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_register/messages': typeof RegisterMessagesRoute
   '/_register/': typeof RegisterIndexRoute
   '/_register/films/$id': typeof RegisterFilmsIdRoute
+  '/_register/profil/$id': typeof RegisterProfilIdRoute
   '/_register/subjects/$id': typeof RegisterSubjectsIdRoute
   '/_register/films/': typeof RegisterFilmsIndexRoute
   '/_register/subjects/': typeof RegisterSubjectsIndexRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/'
     | '/films/$id'
+    | '/profil/$id'
     | '/subjects/$id'
     | '/films'
     | '/subjects'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/'
     | '/films/$id'
+    | '/profil/$id'
     | '/subjects/$id'
     | '/films'
     | '/subjects'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_register/messages'
     | '/_register/'
     | '/_register/films/$id'
+    | '/_register/profil/$id'
     | '/_register/subjects/$id'
     | '/_register/films/'
     | '/_register/subjects/'
@@ -234,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterSubjectsIdRouteImport
       parentRoute: typeof RegisterRoute
     }
+    '/_register/profil/$id': {
+      id: '/_register/profil/$id'
+      path: '/profil/$id'
+      fullPath: '/profil/$id'
+      preLoaderRoute: typeof RegisterProfilIdRouteImport
+      parentRoute: typeof RegisterRoute
+    }
     '/_register/films/$id': {
       id: '/_register/films/$id'
       path: '/films/$id'
@@ -248,6 +267,7 @@ interface RegisterRouteChildren {
   RegisterMessagesRoute: typeof RegisterMessagesRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   RegisterFilmsIdRoute: typeof RegisterFilmsIdRoute
+  RegisterProfilIdRoute: typeof RegisterProfilIdRoute
   RegisterSubjectsIdRoute: typeof RegisterSubjectsIdRoute
   RegisterFilmsIndexRoute: typeof RegisterFilmsIndexRoute
   RegisterSubjectsIndexRoute: typeof RegisterSubjectsIndexRoute
@@ -257,6 +277,7 @@ const RegisterRouteChildren: RegisterRouteChildren = {
   RegisterMessagesRoute: RegisterMessagesRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   RegisterFilmsIdRoute: RegisterFilmsIdRoute,
+  RegisterProfilIdRoute: RegisterProfilIdRoute,
   RegisterSubjectsIdRoute: RegisterSubjectsIdRoute,
   RegisterFilmsIndexRoute: RegisterFilmsIndexRoute,
   RegisterSubjectsIndexRoute: RegisterSubjectsIndexRoute,
