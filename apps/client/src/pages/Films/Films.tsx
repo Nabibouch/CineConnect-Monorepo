@@ -1,6 +1,8 @@
 import { useFilms } from '../../hook/useFilms';
 import FilmCard from '../../components/FilmCard';
 import { Link } from '@tanstack/react-router';
+import SearchBar from '../../components/Searchbar';
+import Theme from '../../components/Filmtheme';
 
 const Films = () => {
     const { data: films, isLoading, error } = useFilms();
@@ -10,7 +12,13 @@ const Films = () => {
 
     return (
         <div className="px-6 py-8 space-y-6 bg-toxic">
-            <h1 className="text-3xl font-semibold tracking-wide">Films</h1>
+            <h1 className="text-3xl font-semibold tracking-wide text-white">Films</h1>
+
+            <div className='flex justify-center '>
+            <SearchBar/>
+            </div>
+            <Theme />
+
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {films?.map((film) => (
                     <Link to="/films/$id" params={{ id: film.id.toString() }} key={film.id}>
