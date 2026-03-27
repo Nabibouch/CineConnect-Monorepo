@@ -26,9 +26,8 @@ export function SignInForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // 👈 pour recevoir le cookie
           body: JSON.stringify(data),
-          credentials: "include",
+          credentials: "include", 
         }
       )
 

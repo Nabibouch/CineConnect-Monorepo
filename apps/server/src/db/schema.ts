@@ -34,6 +34,7 @@ export const filmsTable = pgTable("films", {
 export const postsTable = pgTable("posts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar().notNull(),
+  description: text(),
   user_id: integer().references(() => usersTable.id),
   film_id: integer().references(() => filmsTable.id),
 });

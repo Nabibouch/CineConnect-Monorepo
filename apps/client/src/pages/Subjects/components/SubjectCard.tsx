@@ -20,6 +20,12 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
         {subject.title}
       </p>
 
+      {subject.description && (
+        <p className="text-sm text-muted-foreground overflow-hidden [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical]">
+          {subject.description}
+        </p>
+      )}
+
       <div className="mt-auto pt-4 flex gap-4 text-sm border-t border-border">
         {subject.film_id && (
           <p>

@@ -15,35 +15,36 @@ export default function SubjectDetailsPage() {
     if (!subject) return <div className="p-4">Sujet introuvable</div>;
 
     return (
-        <div className="max-w-3xl mx-auto p-6 space-y-6">
-            {/* Header */}
-            <div className="space-y-2">
-                <h1 className="text-3xl font-bold">{subject.title}</h1>
-                <p className="text-gray-600">Post ID: {subject.id}</p>
-                <p className="text-gray-600">Film ID: {subject.film_id || 'Aucun'}</p>
-                <p className="text-gray-600">User ID: {subject.user_id}</p>
-            </div>
+        <div className="relative min-h-screen p-16 space-x-2 bg-toxic">
+            <div className="flex flex-col gap-8 max-w-3xl mx-auto">
+                <div className="space-y-2">
+                    <h1 className="text-5xl text-white font-semibold">{subject.title}</h1>
+                    {subject.description && (
+                        <p className="text-white font-medium text-xl mt-4">{subject.description}</p>
+                    )}
+                </div>
 
-            {/* Comments */}
-            <div>
-                <h2 className="text-xl font-semibold mb-3">Commentaires</h2>
+                <div>
+                    <h2 className="text-xl text-white font-semibold mb-2">Commentaires</h2>
 
-                {subject.comments?.length ? (
-                    <ul className="space-y-3">
-                        {subject.comments.map((comment) => (
-                            <li key={comment.id} className="p-4 border rounded-2xl shadow-sm">
-                                <p className="font-medium">{comment.title}</p>
-                                <p className="text-sm text-gray-500">
-                                    User: {comment.user_id} | Post: {comment.post_id}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>Aucun commentaire</p>
-                )}
-            </div>
+                    {subject.comments?.length ? (
+                        <ul className="space-y-3">
+                            {subject.comments.map((comment) => (
+                                <li
+                                    key={comment.id}
+                                    className="p-4 border border-slate-800 bg-slate-900/60 rounded-2xl shadow-sm"
+                                >
+                                    <p className="text-white font-medium">{comment.title}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-white">Aucun commentaire</p>
+                    )}
+                </div>
+
             <NewCom subject={subject} />
+            </div>
         </div>
     );
 }
