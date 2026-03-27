@@ -92,4 +92,8 @@ export const messagesTable = pgTable("messages", {
   content:         text().notNull(),
   created_at:      timestamp().defaultNow(),
 });
-///
+
+export const iconstable = pgTable("Icons", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  icons: varchar(),
+})
