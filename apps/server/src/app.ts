@@ -23,8 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use(cookieParser());
 app.use("/api", router);
-app.use('/users', usersRouter);
-app.use('/films', filmsRouter);
 app.use('/conversations', conversationsRouter);
 
 export default app;

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource/bebas-neue": "^5.2.7",
+    "@fontsource/noto-sans": "^5.2.10",
     "@radix-ui/react-slot": "^1.2.4",
     "@remixicon/react": "^4.9.0",
     "@tanstack/react-form": "^1.28.0",

@@ -5,6 +5,7 @@ import { useCreateSubject } from '../../../hook/useSubjects';
 export const NewSubject = () => {
   const { id } = useParams({ from: '/_register/films/$id' });
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const createSubject = useCreateSubject();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -14,12 +15,14 @@ export const NewSubject = () => {
     createSubject.mutate(
       {
         title: title,
+        description: description.trim(),
         film_id: Number(id),
         user_id: 1, // Hardcoded en attendant un auth context si ce n'est pas fourni
       },
       {
         onSuccess: () => {
           setTitle('');
+          setDescription('');
         },
       }
     );
@@ -42,6 +45,24 @@ export const NewSubject = () => {
             className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
             disabled={createSubject.isPending}
             required
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="subject-description"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Description
+          </label>
+          <textarea
+            id="subject-description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Ajoutez quelques détails (facultatif)"
+            rows={4}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+            disabled={createSubject.isPending}
           />
         </div>
 

@@ -1,6 +1,5 @@
 import { useFilms } from '../../hook/useFilms';
 import FilmCard from '../../components/FilmCard';
-import { Link } from '@tanstack/react-router';
 import SearchBar from '../../components/Searchbar';
 import Theme from '../../components/Filmtheme';
 
@@ -21,9 +20,7 @@ const Films = () => {
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {films?.map((film) => (
-                    <Link to="/films/$id" params={{ id: film.id.toString() }} key={film.id}>
-                        <FilmCard film={film} />
-                    </Link>
+                    <FilmCard key={film.id} film={film} />
                 ))}
             </div>
         </div>

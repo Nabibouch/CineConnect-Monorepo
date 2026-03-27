@@ -36,6 +36,7 @@ export function SignUpForm() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
+          credentials : "include"
         }
       )
 
@@ -110,7 +111,7 @@ export function SignUpForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5 font-[system-ui,sans-serif,Arial]">
       {/* USERNAME */}
       <FormInput
         label="Username"
