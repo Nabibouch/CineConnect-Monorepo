@@ -83,17 +83,17 @@ const RegisterFilmsIdRoute = RegisterFilmsIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof RegisterIndexRoute
   '/film': typeof FilmRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/test': typeof TestRoute
   '/messages': typeof RegisterMessagesRoute
-  '/': typeof RegisterIndexRoute
   '/films/$id': typeof RegisterFilmsIdRoute
   '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
-  '/films': typeof RegisterFilmsIndexRoute
-  '/subjects': typeof RegisterSubjectsIndexRoute
+  '/films/': typeof RegisterFilmsIndexRoute
+  '/subjects/': typeof RegisterSubjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/film': typeof FilmRoute
@@ -126,17 +126,17 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/film'
     | '/signin'
     | '/signup'
     | '/test'
     | '/messages'
-    | '/'
     | '/films/$id'
     | '/profil/$id'
     | '/subjects/$id'
-    | '/films'
-    | '/subjects'
+    | '/films/'
+    | '/subjects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/film'
@@ -207,7 +207,7 @@ declare module '@tanstack/react-router' {
     '/_register': {
       id: '/_register'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -228,14 +228,14 @@ declare module '@tanstack/react-router' {
     '/_register/subjects/': {
       id: '/_register/subjects/'
       path: '/subjects'
-      fullPath: '/subjects'
+      fullPath: '/subjects/'
       preLoaderRoute: typeof RegisterSubjectsIndexRouteImport
       parentRoute: typeof RegisterRoute
     }
     '/_register/films/': {
       id: '/_register/films/'
       path: '/films'
-      fullPath: '/films'
+      fullPath: '/films/'
       preLoaderRoute: typeof RegisterFilmsIndexRouteImport
       parentRoute: typeof RegisterRoute
     }

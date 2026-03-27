@@ -4,6 +4,7 @@ import {
   varchar,
   text,
   timestamp,
+  real,
 } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
@@ -26,7 +27,8 @@ export const filmsTable = pgTable("films", {
   actors: varchar({ length: 255 }).array(),
   awards: varchar({ length: 255 }).array(),
   released_date: timestamp(),
-  created_at: timestamp().defaultNow()
+  created_at: timestamp().defaultNow(),
+  vote_average: real()
 });
 
 export const postsTable = pgTable("posts", {

@@ -6,11 +6,13 @@ const Header = () => {
   const { data: me } = useMe();
 
   return (
-    <header className="flex justify-between items-center px-12 text-white bg-slayer">
-      <span className="text-[40px]  font-bold">MOVIE<span className="text-primary">TUNE</span></span>
+    <header className="flex justify-between items-center px-12 text-white bg-slayer sticky top-0 z-50">
+      <span className="text-[40px] font-bold">
+        MOVIE<span className="text-primary">TUNE</span>
+      </span>
       <nav className="flex gap-10 text-[18px]">
-        <Link to="/"> Home </Link>
-        <Link to="/films"> Movies </Link>
+        <Link to="/">Home</Link>
+        <Link to="/films">Movies</Link>
         <Link to="/subjects">Subjects</Link>
       </nav>
       <div className="flex gap-10 text-primary">
@@ -31,4 +33,3 @@ const Header = () => {
 };
 
 export default Header;
-  

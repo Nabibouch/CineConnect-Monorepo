@@ -15,12 +15,10 @@ export function SignInForm() {
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [successMessage, setSuccessMessage] = useState("")
-
+    
+  
   const signInMutation = useMutation({
     mutationFn: async (data: SignInData) => {
-      console.log("VITE_API_URL:", import.meta.env.VITE_API_URL)
-      console.log("Sending data:", data)
-      console.log("Stringified:", JSON.stringify(data))
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/users/signin`,
         {
@@ -28,23 +26,20 @@ export function SignInForm() {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include", // 👈 pour recevoir le cookie
           body: JSON.stringify(data),
           credentials: "include",
         }
       )
-      console.log("Response status:", response.status)
-      console.log("Response headers:", response.headers)
+
       const responseText = await response.text()
-      console.log("Response body (raw):", responseText)
 
       if (!response.ok) {
         let errorMessage = "Erreur lors de la connexion"
         try {
           const errorData = JSON.parse(responseText)
-          console.log("Error data parsed:", errorData)
           errorMessage = errorData.message || errorMessage
         } catch (e) {
-          console.log("Could not parse error JSON, raw text:", responseText)
           errorMessage = responseText || errorMessage
         }
         throw new Error(errorMessage)

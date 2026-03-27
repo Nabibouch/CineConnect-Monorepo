@@ -7,7 +7,7 @@ const Allfilm = () => {
   if (isLoading) return <div>Chargement...</div>;
 
   return (
-    <main className="flex flex-col bg-slate-950 flex-1 gap-6 py-6 px-20">
+    <main className="flex flex-col bg-toxic flex-1 gap-6 py-6 px-20">
       <h1 className="text-3xl font-bold text-white mb-6">Tous les films</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {films?.map((film) => (
