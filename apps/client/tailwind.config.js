@@ -24,6 +24,7 @@ export default {
       		slayer: "hsl(var(--slayer))",
 			light_slayer: 'hsl(var(--light_slayer))',
 			toxic:'hsl(var(--toxic))',
+			purpple: 'hsl(var(--purpple))',
 			
   			card: {
   				DEFAULT: 'hsl(var(--card))',

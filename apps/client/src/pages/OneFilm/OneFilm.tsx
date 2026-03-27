@@ -47,7 +47,7 @@ const OneFilm = () => {
             </div>
 
             <div>
-                <p className="text-white font-medium text-4xl mt-8">{film.description}</p>
+                <p className="text-white  text-4xl mt-8">{film.description}</p>
             </div>
 
             <div>
