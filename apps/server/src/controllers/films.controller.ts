@@ -19,9 +19,7 @@ export const addFilm = async (req: Request, res: Response) => {
 export const getAllFilms = async (req: Request, res: Response) => {
   try {
     const findAllFilms = await filmService.findAllFilms();
-    return res.status(200).json({
-      listOfFilms: findAllFilms,
-    });
+    return res.status(200).json(findAllFilms);
   } catch (error) {
     if (error instanceof Error) {
       return res.status(400).json({ error: error.message });
@@ -71,7 +69,7 @@ export const getOneFilm = async (
   try {
     const { id } = req.params;
     const film = await filmService.findFilmById(id);
-    return res.status(200).json({ film: film });
+    return res.status(200).json(film);
   } catch (error) {
     if (error instanceof Error) {
       return res.status(400).json({ error: error.message });

@@ -1,0 +1,1 @@
+ALTER TABLE "films" ADD COLUMN "author" varchar(255) NOT NULL;

@@ -2,75 +2,45 @@ import { eq } from "drizzle-orm";
 import db from "../db/index.js";
 import { usersTable } from "../db/schema.js";
 import argon2 from "argon2";
-
-type udpdateData = {
-  username?: string;
-  email?: string;
-  password: string;
-};
+import { normalizeId } from "../utils/normalizeId.js";
+import { SignUpInput, SignInInput } from "../utils/userSchema.js";
+import { UserInput } from "../utils/userInput.js";
 
 const userService = {
-  async createUser(data: {
-    username: string;
-    email: string;
-    password: string;
-  }) {
-    if (!data.username || !data.email || !data.password) {
-      throw new Error("Tout les champs doivent être remplis");
-    }
+  async createUser(data: SignUpInput) {
+  // 👇 Plus besoin de vérifier les champs vides ni la longueur du password
+  const existingUser = await db
+    .select({ email: usersTable.email })
+    .from(usersTable)
+    .where(eq(usersTable.email, data.email))
+    .limit(1);
 
-    const existingUser = await db
-      .select({ email: usersTable.email })
-      .from(usersTable)
-      .where(eq(usersTable.email, data.email))
-      .limit(1);
+  if (existingUser.length) {
+    throw new Error("Email déjà utilisé par un autre utilisateur");
+  }
 
-    if (existingUser.length) {
-      throw new Error("Email déjà utilisé par un autre utilisateur");
-    }
+  const hashedPassword = await argon2.hash(data.password, {
+    type: argon2.argon2id,
+    memoryCost: 65536,
+    timeCost: 3,
+    parallelism: 4,
+  });
 
-    if (data.password.length < 6) {
-      throw new Error("Le mot de passe doit contenir au moins 6 charactères");
-    }
+  const [user] = await db
+    .insert(usersTable)
+    .values({
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
+    })
+    .returning();
 
-    const hashedPassword = await argon2.hash(data.password, {
-      type: argon2.argon2id,
-      memoryCost: 65536,
-      timeCost: 3,
-      parallelism: 4,
-    });
-    const [user] = await db
-      .insert(usersTable)
-      .values({
-        username: data.username,
-        email: data.email,
-        password: hashedPassword,
-      })
-      .returning();
-
-    return user;
-  },
-
-  async findAllUsers() {
-    try {
-      const listUsers = await db
-        .select({
-          id: usersTable.id,
-          username: usersTable.username,
-        })
-        .from(usersTable);
-
-      return listUsers;
-    } catch (error) {
-      throw new Error("Erreur lors de la récupération des utilisateurs");
-    }
-  },
+  return user;
+},
 
   async findUserById(id: string) {
     try {
-      const userId = Number(id);
-
-      if (isNaN(userId)) throw new Error("L'id est incorrect");
+      const userId = normalizeId(id, "L'id est incorrect");
 
       const [user] = await db
         .select({
@@ -80,46 +50,50 @@ const userService = {
         .from(usersTable)
         .where(eq(usersTable.id, userId));
 
-      return user;
-    } catch (error) {
-      throw new Error("Erreur lors de la récupération de l'utilisateur");
+    return user;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
     }
-  },
+    // throw new Error("Erreur lors de la récupération de l'utilisateur par email");
+  }
+},
 
-  async connexion(data: { email: string; password: string }) {
+  async connexion(data: SignInInput) {
+  // 👇 Plus besoin de vérifier les champs vides
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, data.email))
+    .limit(1);
+
+  if (!user.length) throw new Error("Identifiants incorrects");
+
+  const passwordCheck = await argon2.verify(user[0].password, data.password);
+  if (!passwordCheck) throw new Error("Mot de passe incorrect");
+
+  const { password, ...userWithoutPassword } = user[0];
+  return userWithoutPassword;
+},
+
+    async findAllUsers() {
+  try {
+    const listUsers = await db
+      .select({
+        id: usersTable.id,
+        username: usersTable.username,
+      })
+      .from(usersTable);
+
+    return listUsers;
+  } catch (error) {
+    throw new Error("Erreur lors de la récupération des utilisateurs");
+  }
+},
+
+  async updateById(data: UserInput, id: string) {
     try {
-      if (!data.email || !data.password) {
-        throw new Error("Tout les champs doivent être remplis");
-      }
-
-      const user = await db
-        .select()
-        .from(usersTable)
-        .where(eq(usersTable.email, data.email))
-        .limit(1);
-
-      if (!user.length) throw new Error("Identifiant incorrects");
-
-      const passwordCheck = await argon2.verify(
-        user[0].password,
-        data.password,
-      );
-      if (!passwordCheck) {
-        throw new Error("Mot de passe incorrect");
-      }
-
-      const { password, ...userWithoutPassword } = user[0];
-
-      return userWithoutPassword;
-    } catch (error) {
-      throw new Error("Erreur server");
-    }
-  },
-
-  async updateById(data: udpdateData, id: string) {
-    try {
-      const userId = Number(id);
-      if (isNaN(userId)) throw new Error("Id n'est pas valide");
+      const userId = normalizeId(id, "Id n'est pas valide");
 
       const updatedUser = await db
         .update(usersTable)
@@ -139,10 +113,7 @@ const userService = {
 
   async removeById(id: string) {
     try {
-      const userId = Number(id);
-      if (isNaN(userId)) {
-        throw new Error("L'id n'est pas valide");
-      }
+      const userId = normalizeId(id);
       const deletedUser = await db
         .delete(usersTable)
         .where(eq(usersTable.id, userId))
@@ -161,5 +132,7 @@ const userService = {
     }
   },
 };
+
+
 
 export default userService;

@@ -14,10 +14,10 @@
     "skipLibCheck": true,
 
     "lib": ["ES2022", "ESNext"],
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
 
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts" ,]
 }

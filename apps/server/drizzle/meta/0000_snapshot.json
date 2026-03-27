@@ -1,5 +1,5 @@
 {
-  "id": "6773951e-1f6b-4385-be3a-bebe4cb2844e",
+  "id": "6130ac99-e74f-4a0b-9932-9dfd64aff03c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -138,9 +138,9 @@
             "cycle": false
           }
         },
-        "content": {
-          "name": "content",
-          "type": "text",
+        "title": {
+          "name": "title",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -154,13 +154,13 @@
           "name": "film_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "subject_id": {
-          "name": "subject_id",
+        "post_id": {
+          "name": "post_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -191,12 +191,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "comments_subject_id_subjects_id_fk": {
-          "name": "comments_subject_id_subjects_id_fk",
+        "comments_post_id_posts_id_fk": {
+          "name": "comments_post_id_posts_id_fk",
           "tableFrom": "comments",
-          "tableTo": "subjects",
+          "tableTo": "posts",
           "columnsFrom": [
-            "subject_id"
+            "post_id"
           ],
           "columnsTo": [
             "id"
@@ -259,8 +259,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.subjects": {
-      "name": "subjects",
+    "public.posts": {
+      "name": "posts",
       "schema": "",
       "columns": {
         "id": {
@@ -270,7 +270,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "subjects_id_seq",
+            "name": "posts_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -301,9 +301,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "subjects_user_id_users_id_fk": {
-          "name": "subjects_user_id_users_id_fk",
-          "tableFrom": "subjects",
+        "posts_user_id_users_id_fk": {
+          "name": "posts_user_id_users_id_fk",
+          "tableFrom": "posts",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -314,9 +314,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "subjects_film_id_films_id_fk": {
-          "name": "subjects_film_id_films_id_fk",
-          "tableFrom": "subjects",
+        "posts_film_id_films_id_fk": {
+          "name": "posts_film_id_films_id_fk",
+          "tableFrom": "posts",
           "tableTo": "films",
           "columnsFrom": [
             "film_id"
@@ -355,20 +355,20 @@
             "cycle": false
           }
         },
-        "film_id": {
-          "name": "film_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "user_id": {
           "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "note": {
-          "name": "note",
+        "movie_id": {
+          "name": "movie_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rate": {
+          "name": "rate",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -376,12 +376,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "ratings_film_id_films_id_fk": {
-          "name": "ratings_film_id_films_id_fk",
+        "ratings_user_id_users_id_fk": {
+          "name": "ratings_user_id_users_id_fk",
           "tableFrom": "ratings",
-          "tableTo": "films",
+          "tableTo": "users",
           "columnsFrom": [
-            "film_id"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -389,12 +389,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "ratings_user_id_users_id_fk": {
-          "name": "ratings_user_id_users_id_fk",
+        "ratings_movie_id_films_id_fk": {
+          "name": "ratings_movie_id_films_id_fk",
           "tableFrom": "ratings",
-          "tableTo": "users",
+          "tableTo": "films",
           "columnsFrom": [
-            "user_id"
+            "movie_id"
           ],
           "columnsTo": [
             "id"

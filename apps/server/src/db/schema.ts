@@ -4,6 +4,7 @@ import {
   varchar,
   text,
   timestamp,
+  real,
 } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
@@ -11,14 +12,23 @@ export const usersTable = pgTable("users", {
   username: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp().defaultNow(),
+  created_at: timestamp().defaultNow(),
+  avatar_url: text()
 });
 
 export const filmsTable = pgTable("films", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   description: text(),
-  release_date: timestamp(),
+  poster_url: text(),
+  author: varchar({ length: 255 }),
+  language: varchar({ length: 255 }),
+  trailer: text(),
+  actors: varchar({ length: 255 }).array(),
+  awards: varchar({ length: 255 }).array(),
+  released_date: timestamp(),
+  created_at: timestamp().defaultNow(),
+  vote_average: real()
 });
 
 export const postsTable = pgTable("posts", {
@@ -43,7 +53,7 @@ export const ratingsTable = pgTable("ratings", {
   user_id: integer()
     .references(() => usersTable.id)
     .notNull(),
-  movie_id: integer()
+  film_id: integer()
     .references(() => filmsTable.id)
     .notNull(),
   rate: integer().notNull(),
@@ -51,7 +61,7 @@ export const ratingsTable = pgTable("ratings", {
 
 export const categoriesTable = pgTable("categories", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull().unique(),
+  name: varchar({ length: 255 }).notNull().unique()
 });
 
 export const categorizationTable = pgTable("categorization", {
@@ -59,7 +69,27 @@ export const categorizationTable = pgTable("categorization", {
   film_id: integer()
     .references(() => filmsTable.id)
     .notNull(),
-  categorie_id: integer()
+  category_id: integer()
     .references(() => categoriesTable.id)
     .notNull(),
 });
+
+export const conversationsTable = pgTable("conversations", {
+  id:         integer().primaryKey().generatedAlwaysAsIdentity(),
+  created_at: timestamp().defaultNow(),
+});
+
+export const conversationMembersTable = pgTable("conversation_members", {
+  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  conversation_id: integer().references(() => conversationsTable.id).notNull(),
+  user_id:         integer().references(() => usersTable.id).notNull(),
+});
+
+export const messagesTable = pgTable("messages", {
+  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  conversation_id: integer().references(() => conversationsTable.id).notNull(),
+  sender_id:       integer().references(() => usersTable.id).notNull(),
+  content:         text().notNull(),
+  created_at:      timestamp().defaultNow(),
+});
+///

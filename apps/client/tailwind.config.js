@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme";
+import tailwindcssAnimate from "tailwindcss-animate";
+
 export default {
     darkMode: ["class"],
     content: [
@@ -7,6 +10,9 @@ export default {
   ],
   theme: {
   	extend: {
+			fontFamily: {
+				sans: ["Bebas Neue", ...defaultTheme.fontFamily.sans],
+			},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -15,6 +21,10 @@ export default {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+      		slayer: "hsl(var(--slayer))",
+			light_slayer: 'hsl(var(--light_slayer))',
+			toxic:'hsl(var(--toxic))',
+			
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
@@ -56,5 +66,5 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 }
