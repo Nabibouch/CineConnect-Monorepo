@@ -33,22 +33,6 @@ export const NewCom = ({ film, subject }: NewComProps) => {
     return (
         <div className="bg-gray-800 border border-gray-700 p-6 rounded-2xl shadow-sm mb-6 mt-6">
             <h2 className="text-xl font-bold mb-4 text-white">Commentaires</h2>
-
-            {parent.comments?.length ? (
-                <ul className="space-y-3 mb-6">
-                    {parent.comments.map((comment: Comment) => (
-                        <article
-                            key={comment.id}
-                            className="block p-4 bg-gray-700 border border-gray-600 rounded-xl hover:bg-gray-600 transition duration-200"
-                        >
-                            <span className="text-gray-200">{comment.title}</span>
-                        </article>
-                    ))}
-                </ul>
-            ) : (
-                <p className="mb-6 text-gray-400 italic">Aucun commentaire pour le moment.</p>
-            )}
-
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <input
                     type="text"
