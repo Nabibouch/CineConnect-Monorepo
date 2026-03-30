@@ -77,3 +77,51 @@ export const getOneFilm = async (
     return res.status(500).json({ error: "Erreur inconnue" });
   }
 };
+
+export const addCategoryToFilm = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const { category } = req.body as { category?: string };
+
+    if (!category) {
+      return res.status(400).json({ error: "La categorie est requise" });
+    }
+
+    const updatedFilm = await filmService.addCategoryToFilm(id, category);
+    return res.status(200).json({
+      message: "Categorie ajoutee au film",
+      film: updatedFilm,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
+export const deleteCategoryFromFilm = async (
+  req: Request<{ id: string; category: string }>,
+  res: Response,
+) => {
+  try {
+    const { id, category } = req.params;
+    const updatedFilm = await filmService.removeCategoryFromFilm(
+      id,
+      category,
+    );
+
+    return res.status(200).json({
+      message: "Categorie supprimée du film",
+      film: updatedFilm,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
