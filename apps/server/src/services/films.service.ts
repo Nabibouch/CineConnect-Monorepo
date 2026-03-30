@@ -117,6 +117,98 @@ const filmService = {
     }
   },
 
+  async addCategoryToFilm(id: string, categoryName: string) {
+    try {
+      if (!categoryName || typeof categoryName !== "string") {
+        throw new Error("Le nom de la categorie est requis");
+      }
+
+      const filmId = normalizeId(id);
+
+      const [film] = await db
+        .select()
+        .from(filmsTable)
+        .where(eq(filmsTable.id, filmId))
+        .limit(1);
+
+      if (!film) {
+        throw new Error(`Aucun film avec l'id ${filmId} n'a ete trouve`);
+      }
+
+      const existingCategories = film.categories ?? [];
+      const trimmed = categoryName.trim();
+
+      if (!trimmed) {
+        throw new Error("Le nom de la categorie ne peut pas etre vide");
+      }
+
+      // Evite les doublons dans le champ `categories` (array varchar).
+      if (existingCategories.includes(trimmed)) {
+        return film;
+      }
+
+      const updatedCategories = [...existingCategories, trimmed];
+
+      const [updatedFilm] = await db
+        .update(filmsTable)
+        .set({ categories: updatedCategories })
+        .where(eq(filmsTable.id, filmId))
+        .returning();
+
+      return updatedFilm;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error("Erreur lors de l'ajout de la categorie au film");
+    }
+  },
+
+  async removeCategoryFromFilm(id: string, categoryName: string) {
+    try {
+      if (!categoryName || typeof categoryName !== "string") {
+        throw new Error("Le nom de la categorie est requis");
+      }
+
+      const filmId = normalizeId(id);
+      const [film] = await db
+        .select()
+        .from(filmsTable)
+        .where(eq(filmsTable.id, filmId))
+        .limit(1);
+
+      if (!film) {
+        throw new Error(`Aucun film avec l'id ${filmId} n'a ete trouve`);
+      }
+
+      const existingCategories = film.categories ?? [];
+      const trimmed = categoryName.trim();
+
+      if (!trimmed) {
+        throw new Error("Le nom de la categorie ne peut pas etre vide");
+      }
+
+      if (!existingCategories.includes(trimmed)) {
+        throw new Error("La categorie n'existe pas pour ce film");
+      }
+
+      const updatedCategories = existingCategories.filter(
+        (c) => c !== trimmed,
+      );
+
+      const [updatedFilm] = await db
+        .update(filmsTable)
+        .set({ categories: updatedCategories })
+        .where(eq(filmsTable.id, filmId))
+        .returning();
+
+      return updatedFilm;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error(
+        "Erreur lors de la suppression de la categorie du film",
+      );
+    }
+  },
+
 };
 
 export default filmService;
