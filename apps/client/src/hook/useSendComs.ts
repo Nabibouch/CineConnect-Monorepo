@@ -7,9 +7,11 @@ export const useSendComs = () => {
     return useMutation({
         mutationFn: (newComment: CreateCommentPayload) => apiComments.createComment(newComment),
         onSuccess: () => {
-            // On invalide les requêtes liées aux films pour recharger les données incluant le nouveau commentaire
+            // On invalide les requêtes liées aux films et sujets pour recharger les données incluant le nouveau commentaire
             queryClient.invalidateQueries({ queryKey: ['film'] });
             queryClient.invalidateQueries({ queryKey: ['films'] });
+            queryClient.invalidateQueries({ queryKey: ['subject'] });
+            queryClient.invalidateQueries({ queryKey: ['subjects'] });
         },
     });
 };
