@@ -6,6 +6,7 @@ import { useOneFilm } from '../../hook/useFilms';
 import { FilmDetails } from './components/FilmDetails';
 
 
+
 const OneFilm = () => {
     const { id } = useParams({ from: '/_register/films/$id' });
     const { data: film, isLoading, isError } = useOneFilm(id);
