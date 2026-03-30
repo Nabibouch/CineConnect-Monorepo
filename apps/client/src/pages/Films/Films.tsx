@@ -1,10 +1,15 @@
 import { useFilms } from '../../hook/useFilms';
+import { useFilmSearch } from '../../hook/useFilmSearch';
+import { useFilmThemeFilter } from '../../hook/useFilmThemeFilter';
 import FilmCard from '../../components/FilmCard';
 import SearchBar from '../../components/Searchbar';
-import Theme from '../../components/Filmtheme';
+import FilterBar from '../../components/filterBar';
+
 
 const Films = () => {
     const { data: films, isLoading, error } = useFilms();
+    const { query, handleChange, filteredFilms } = useFilmSearch(films);
+    const { themes, selectedTheme, selectTheme, filteredFilms: filteredByTheme } = useFilmThemeFilter(filteredFilms);
 
     if (isLoading) return <div>Chargement des films...</div>;
     if (error) return <div>Erreur lors du chargement des films.</div>;
@@ -14,12 +19,12 @@ const Films = () => {
             <h1 className="text-3xl font-semibold tracking-wide text-white">Films</h1>
 
             <div className='flex justify-center '>
-            <SearchBar/>
+            <SearchBar value={query} onChange={handleChange}/>
             </div>
-            <Theme />
+            <FilterBar themes={themes} selectedTheme={selectedTheme} onSelectTheme={selectTheme} />
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {films?.map((film) => (
+                {(filteredByTheme ?? filteredFilms)?.map((film) => (
                     <FilmCard key={film.id} film={film} />
                 ))}
             </div>
