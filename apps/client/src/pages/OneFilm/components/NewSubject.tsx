@@ -29,7 +29,7 @@ export const NewSubject = () => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-8 border border-gray-700 w-full max-w-2xl mx-auto">
+    <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-8 mb-8 border border-gray-700 w-full mx-auto">
       <h3 className="text-xl font-semibold text-white mb-4">Démarrer un nouveau sujet de discussion</h3>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>

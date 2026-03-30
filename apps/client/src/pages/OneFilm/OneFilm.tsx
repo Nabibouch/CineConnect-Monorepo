@@ -3,7 +3,6 @@ import { NewCom } from '../../components/NewCom';
 import FilmHeader from './components/Filmheader';
 import { useParams } from '@tanstack/react-router';
 import { useOneFilm } from '../../hook/useFilms';
-import { FilmDetails } from './components/FilmDetails';
 
 
 const OneFilm = () => {
@@ -18,7 +17,6 @@ const OneFilm = () => {
         <div className="relative min-h-screen space-x-2 bg-toxic text-white">
             <FilmHeader />
             <div className='px-32'>
-                <FilmDetails film={film}/>
                 <NewCom film={film} />
                 <NewSubject />
             </div>
