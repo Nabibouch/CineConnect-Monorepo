@@ -9,10 +9,10 @@ export const FilmDetails = ({ film }: FilmDetailsProps) => {
     return (
         <div className="flex flex-col gap-6 my-8">
             <div className="flex flex-col gap-2">
-                <h3 className="text-xl">Description</h3>
+                {/* <h3 className="text-xl">Description</h3>
                 <p className="text-white font-medium text-xl">
                     {film.description}
-                </p>
+                </p> */}
             </div>
 
             <div>
