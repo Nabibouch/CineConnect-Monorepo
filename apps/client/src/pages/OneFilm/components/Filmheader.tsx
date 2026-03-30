@@ -48,9 +48,9 @@ const FilmHeader = () => {
 
         {/* Colonne infos */}
         <div className="flex flex-col justify-between flex-1 py-2">
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 w-fit">
+            <div className="flex items-center gap-2 bg-rose-100 backdrop-blur-sm rounded-full px-4 py-1 w-fit">
                 <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                <span className="text-white font-bold text-lg">{averageRate.toFixed(1)}</span>
+                <span className="text-black font-bold text-lg">{averageRate.toFixed(1)}</span>
             </div>
 
             <div className="flex flex-col gap-3">
