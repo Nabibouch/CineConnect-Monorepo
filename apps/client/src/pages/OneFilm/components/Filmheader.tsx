@@ -36,25 +36,25 @@ const FilmHeader = () => {
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
         {/* Contenu par-dessus l'overlay */}
-        <div className="relative z-10 flex gap-2 px-16">
+        <div className="relative z-10 flex flex-col gap-2 px-16">
             <img
                 src={film.poster_url || 'https://via.placeholder.com/200x300'}
                 alt={film.title}
-                className="w-80 h-80 object-cover object-top rounded-2xl shadow-2xl shadow-black"
+                className="w-80 h-80 object-cover object-top rounded-2xl shadow-2xl shadow-black transition-transform duration-300 ease-out hover:scale-[1.05]"
             />
+                <div className='flex flex-col justify-start items-center'>
+                    <h1 className="text-6xl text-rose-500">{film.title}</h1>
+                    <p className="text-white text-2xl">Langue: {film.language || 'VF'}</p>
+                    <p className="text-white text-2xl">Sortie: {film.released_date || 'Non renseignée'}</p>
+                    <RatingStars
+                        averageRate={averageRate}
+                        isPending={isRatePending}
+                        onRate={handleRate}
+                    />
+                </div>
+
             <div className="flex flex-col gap-3">
                 
-                <h1 className="text-6xl text-rose-500">{film.title}</h1>
-                <p className="text-white text-2xl">Langue: {film.language || 'Inconnue'}</p>
-                <p className="text-white text-2xl">Auteur: {film.author || 'Inconnu'}</p>
-                <p className="text-white text-2xl">Sortie: {film.released_date || 'Non renseignée'}</p>
-                <h3 className="text-xl">Description</h3>
-                <RatingStars
-                    averageRate={averageRate}
-                    isPending={isRatePending}
-                    onRate={handleRate}
-                />
-
                 <div>
                     <h3 className="text-xl">Description</h3>
                     <p className="text-white font-medium text-xl">
