@@ -28,7 +28,8 @@ export const filmsTable = pgTable("films", {
   awards: varchar({ length: 255 }).array(),
   released_date: timestamp(),
   created_at: timestamp().defaultNow(),
-  vote_average: real()
+  vote_average: real(),
+  categories: varchar({ length: 255}).array()
 });
 
 export const postsTable = pgTable("posts", {
