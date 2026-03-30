@@ -33,6 +33,7 @@ export interface Film {
   actors: string | null;
   awards: string | null;
   released_date: string | null;
+  categories?: string[];
   created_at: string;
   posts: Post[];
   comments: Comment[];
