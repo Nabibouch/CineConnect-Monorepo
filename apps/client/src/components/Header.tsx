@@ -11,10 +11,20 @@ const Header = () => {
         MOVIE<span className="text-primary">TUNE</span>
       </Link>
       <nav className="flex gap-10 text-[18px]">
-        <Link to="/" className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Home</Link>
-        <Link to="/films" className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Movies</Link>
-        <Link to="/subjects" className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Subjects</Link>
+
+        <Link to="/" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Home</Link>
+
+        <Link to="/films" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Movies</Link>
+
+        <Link to="/subjects" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Subjects</Link>
       </nav>
+
       <div className="flex gap-10 text-primary">
         <Link to="/messages">
           <MessageSquareMore />
