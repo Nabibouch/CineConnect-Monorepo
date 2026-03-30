@@ -9,7 +9,7 @@ type SearchBarProps = {
 const SearchBar = ({ value, onChange }: SearchBarProps) => {
 
     return (
-        <div className="flex items-center w-[564px] h-[48px] bg-[#FFDEE6] rounded-2xl px-4">
+        <div className="flex items-center w-[564px] h-[48px] bg-[#FFDEE6] rounded-2xl px-4 sticky">
   
             <RiSearchLine className="text-red-500 text-4xl " />
 

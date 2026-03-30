@@ -3,7 +3,7 @@ import Filmtheme from "./filmtheme/filmtheme";
 const Theme = () => {
 
 return(
-    <div className="flex gap-3 justify-center">
+    <div className="flex gap-3 justify-center ">
      <Filmtheme  
         title="Science"
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/4_p5aoit.png"

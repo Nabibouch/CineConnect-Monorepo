@@ -7,14 +7,24 @@ const Header = () => {
 
   return (
     <header className="flex justify-between items-center px-12 text-white bg-slayer sticky top-0 z-50">
-      <span className="text-[40px] font-bold">
+      <Link to= "/" className="text-[40px] font-bold">
         MOVIE<span className="text-primary">TUNE</span>
-      </span>
+      </Link>
       <nav className="flex gap-10 text-[18px]">
-        <Link to="/">Home</Link>
-        <Link to="/films">Movies</Link>
-        <Link to="/subjects">Subjects</Link>
+
+        <Link to="/" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Home</Link>
+
+        <Link to="/films" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Movies</Link>
+
+        <Link to="/subjects" 
+        activeProps={{className: "text-rose-500 border-b-2 border-white"}}
+        className="transition-tranform duration-300 ease-out hover:text-rose-500 hover:-translate-y-2 ">Subjects</Link>
       </nav>
+
       <div className="flex gap-10 text-primary">
         <Link to="/messages">
           <MessageSquareMore />
