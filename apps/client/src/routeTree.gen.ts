@@ -21,6 +21,7 @@ import { Route as RegisterFilmsIndexRouteImport } from './routes/_register/films
 import { Route as RegisterSubjectsIdRouteImport } from './routes/_register/subjects/$id'
 import { Route as RegisterProfilIdRouteImport } from './routes/_register/profil/$id'
 import { Route as RegisterFilmsIdRouteImport } from './routes/_register/films/$id'
+import { Route as RegisterCategoriesSlugRouteImport } from './routes/_register/categories/$slug'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
@@ -81,6 +82,11 @@ const RegisterFilmsIdRoute = RegisterFilmsIdRouteImport.update({
   path: '/films/$id',
   getParentRoute: () => RegisterRoute,
 } as any)
+const RegisterCategoriesSlugRoute = RegisterCategoriesSlugRouteImport.update({
+  id: '/categories/$slug',
+  path: '/categories/$slug',
+  getParentRoute: () => RegisterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof RegisterIndexRoute
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/test': typeof TestRoute
   '/messages': typeof RegisterMessagesRoute
+  '/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/films/$id': typeof RegisterFilmsIdRoute
   '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/test': typeof TestRoute
   '/messages': typeof RegisterMessagesRoute
   '/': typeof RegisterIndexRoute
+  '/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/films/$id': typeof RegisterFilmsIdRoute
   '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/test': typeof TestRoute
   '/_register/messages': typeof RegisterMessagesRoute
   '/_register/': typeof RegisterIndexRoute
+  '/_register/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/_register/films/$id': typeof RegisterFilmsIdRoute
   '/_register/profil/$id': typeof RegisterProfilIdRoute
   '/_register/subjects/$id': typeof RegisterSubjectsIdRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/test'
     | '/messages'
+    | '/categories/$slug'
     | '/films/$id'
     | '/profil/$id'
     | '/subjects/$id'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/messages'
     | '/'
+    | '/categories/$slug'
     | '/films/$id'
     | '/profil/$id'
     | '/subjects/$id'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/_register/messages'
     | '/_register/'
+    | '/_register/categories/$slug'
     | '/_register/films/$id'
     | '/_register/profil/$id'
     | '/_register/subjects/$id'
@@ -260,12 +272,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterFilmsIdRouteImport
       parentRoute: typeof RegisterRoute
     }
+    '/_register/categories/$slug': {
+      id: '/_register/categories/$slug'
+      path: '/categories/$slug'
+      fullPath: '/categories/$slug'
+      preLoaderRoute: typeof RegisterCategoriesSlugRouteImport
+      parentRoute: typeof RegisterRoute
+    }
   }
 }
 
 interface RegisterRouteChildren {
   RegisterMessagesRoute: typeof RegisterMessagesRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
+  RegisterCategoriesSlugRoute: typeof RegisterCategoriesSlugRoute
   RegisterFilmsIdRoute: typeof RegisterFilmsIdRoute
   RegisterProfilIdRoute: typeof RegisterProfilIdRoute
   RegisterSubjectsIdRoute: typeof RegisterSubjectsIdRoute
@@ -276,6 +296,7 @@ interface RegisterRouteChildren {
 const RegisterRouteChildren: RegisterRouteChildren = {
   RegisterMessagesRoute: RegisterMessagesRoute,
   RegisterIndexRoute: RegisterIndexRoute,
+  RegisterCategoriesSlugRoute: RegisterCategoriesSlugRoute,
   RegisterFilmsIdRoute: RegisterFilmsIdRoute,
   RegisterProfilIdRoute: RegisterProfilIdRoute,
   RegisterSubjectsIdRoute: RegisterSubjectsIdRoute,
