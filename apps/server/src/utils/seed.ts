@@ -1,5 +1,5 @@
 import db from "../db/index.js";
-import { filmsTable, ratingsTable } from "../db/schema.js";
+import { filmsTable, ratingsTable, usersTable } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import * as dotenv from "dotenv";
 
@@ -92,6 +92,20 @@ function getPoster(path: string | null) {
   return path ? `https://image.tmdb.org/t/p/w500${path}` : null;
 }
 
+async function fetchGenresFromTMDB(): Promise<Record<number, string>> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+  );
+  const data = await res.json() as { genres?: { id: number; name: string }[] };
+  const genreMap: Record<number, string> = {};
+  if (data.genres) {
+    for (const genre of data.genres) {
+      genreMap[genre.id] = genre.name;
+    }
+  }
+  return genreMap;
+}
+
 async function seedFilms() {
   let imported = 0;
   let attempts = 0;
@@ -99,13 +113,37 @@ async function seedFilms() {
 
   const maxAttempts = TARGET * 10;
 
+  console.log(`🎬 Récupération des genres TMDB...`);
+  const genreMap = await fetchGenresFromTMDB();
+
+  console.log(`🤖 Création ou récupération de l'utilisateur bot...`);
+  let botUser = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, "bot@gmail.com"))
+    .limit(1)
+    .then((res) => res[0]);
+
+  if (!botUser) {
+    botUser = await db
+      .insert(usersTable)
+      .values({
+        username: "bot",
+        email: "bot@gmail.com",
+        password: "mdp123",
+      })
+      .returning()
+      .then((res) => res[0]);
+  }
+  const botUserId = botUser.id;
+
   console.log(`🎬 Début de l'import TMDB de ${TARGET} films...`);
 
   while (imported < TARGET && attempts < maxAttempts) {
     attempts++;
 
     try {
-      const data = await fetchFromTMDB(page);
+      const data: any = await fetchFromTMDB(page);
 
       for (const movie of data.results) {
         if (imported >= TARGET) break;
@@ -117,7 +155,11 @@ async function seedFilms() {
           continue;
         }
 
-        await db.insert(filmsTable).values({
+        const categories = movie.genre_ids
+          ? movie.genre_ids.map((id: number) => genreMap[id]).filter(Boolean)
+          : [];
+
+        const [insertedFilm] = await db.insert(filmsTable).values({
           title: movie.title,
           description: movie.overview || null,
           poster_url: getPoster(movie.poster_path),
@@ -129,8 +171,16 @@ async function seedFilms() {
             : null,
           author: null,
           trailer: null,
-          vote_average: movie.vote_average,
-        });
+          categories: categories,
+        }).returning({ id: filmsTable.id });
+
+        if (movie.vote_average != null) {
+          await db.insert(ratingsTable).values({
+            film_id: insertedFilm.id,
+            user_id: botUserId,
+            rate: Math.round(movie.vote_average),
+          });
+        }
 
 
         imported++;
