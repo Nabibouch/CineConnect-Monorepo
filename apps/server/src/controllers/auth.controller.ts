@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import userService from "../services/user.service.js";
 import jwt from "jsonwebtoken";
 import { signInSchema, signUpSchema } from "../utils/userSchema.js";
-import ENV from "../config/ENV.js"; 
+import ENV from "../config/ENV.js";
 import { AuthRequest } from "../middlewares/auth.middleware.js";
 
 // ✅ SIGNUP = Inscription (createUser)
@@ -19,23 +19,8 @@ export const signUp = async (req: Request, res: Response) => {
     const newUser = await userService.createUser(parsed.data);
     const { password, ...userWithoutPassword } = newUser;
 
-    // JWT (connexion automatique)
-    const token = jwt.sign(
-      { id: userWithoutPassword.id, email: userWithoutPassword.email },
-      ENV.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    // Cookie httpOnly
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     return res.status(201).json({
-      message: "Nouvel utilisateur créé et connecté",
+      message: "Nouvel utilisateur créé",
       user: userWithoutPassword,
     });
   } catch (error) {
@@ -107,6 +92,56 @@ export const getOneUser = async (req: Request<{ id: string }>, res: Response) =>
   }
 };
 
+export const getFollowStatus = async (
+  req: Request<{ id: string; followerId: string }>,
+  res: Response,
+) => {
+  try {
+    const followingId = Number(req.params.id);
+    const followerId = Number(req.params.followerId);
+    const status = await userService.getFollowStatus(followerId, followingId);
+    return res.status(200).json(status);
+  } catch (error) {
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
+export const followUser = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const followingId = Number(req.params.id);
+    const followerId = Number(req.body.followerId);
+    const result = await userService.followUser(followerId, followingId);
+    return res.status(200).json({ message: "Utilisateur suivi", ...result });
+  } catch (error) {
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
+export const unfollowUser = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const followingId = Number(req.params.id);
+    const followerId = Number(req.body.followerId);
+    await userService.unfollowUser(followerId, followingId);
+    return res.status(200).json({ message: "Utilisateur ne suit plus ce profil" });
+  } catch (error) {
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
+export const getFollowCounts = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const userId = Number(req.params.id);
+    const counts = await userService.getFollowCounts(userId);
+    return res.status(200).json(counts);
+  } catch (error) {
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
+};
+
 // ✅ updateOneUser
 export const updateOneUser = async (req: Request<{ id: string }>, res: Response) => {
   try {
@@ -133,7 +168,16 @@ export const deleteOneUser = async (req: Request<{ id: string }>, res: Response)
 
 
 export const getMe = async (req: AuthRequest, res: Response) => {
-  return res.status(200).json({ user: req.user });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Non authentifie" });
+    }
+    const user = await userService.findPrivateUserById(req.user.id);
+    return res.status(200).json({ user });
+  } catch (error) {
+    if (error instanceof Error) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: "Erreur inconnue" });
+  }
 };
 
 export const logOut = async (req: AuthRequest, res: Response) => {

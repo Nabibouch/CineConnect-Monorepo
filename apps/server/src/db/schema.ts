@@ -13,7 +13,8 @@ export const usersTable = pgTable("users", {
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
   created_at: timestamp().defaultNow(),
-  avatar_url: text()
+  avatar_url: text(),
+  bio: text(),
 });
 
 export const filmsTable = pgTable("films", {
@@ -29,7 +30,7 @@ export const filmsTable = pgTable("films", {
   released_date: timestamp(),
   created_at: timestamp().defaultNow(),
   vote_average: real(),
-  categories: varchar({ length: 255}).array()
+  categories: varchar({ length: 255 }).array()
 });
 
 export const postsTable = pgTable("posts", {
@@ -77,25 +78,36 @@ export const categorizationTable = pgTable("categorization", {
 });
 
 export const conversationsTable = pgTable("conversations", {
-  id:         integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   created_at: timestamp().defaultNow(),
 });
 
 export const conversationMembersTable = pgTable("conversation_members", {
-  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   conversation_id: integer().references(() => conversationsTable.id).notNull(),
-  user_id:         integer().references(() => usersTable.id).notNull(),
+  user_id: integer().references(() => usersTable.id).notNull(),
 });
 
 export const messagesTable = pgTable("messages", {
-  id:              integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   conversation_id: integer().references(() => conversationsTable.id).notNull(),
-  sender_id:       integer().references(() => usersTable.id).notNull(),
-  content:         text().notNull(),
-  created_at:      timestamp().defaultNow(),
+  sender_id: integer().references(() => usersTable.id).notNull(),
+  content: text().notNull(),
+  created_at: timestamp().defaultNow(),
 });
 
 export const iconstable = pgTable("Icons", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   icons: varchar(),
-})
+});
+
+export const followsTable = pgTable("follows", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  follower_id: integer()
+    .references(() => usersTable.id)
+    .notNull(),
+  following_id: integer()
+    .references(() => usersTable.id)
+    .notNull(),
+  created_at: timestamp().defaultNow(),
+});
