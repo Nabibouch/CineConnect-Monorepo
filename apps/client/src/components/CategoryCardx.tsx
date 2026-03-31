@@ -1,6 +1,16 @@
 import Cardicon from "./categorycard/categorycard";
 
-const CategoryCard = () => {
+import { useNavigate } from '@tanstack/react-router'
+
+const slugify = (title: string) =>
+  title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")
+
+  const CategoryCard = () => {
+  const navigate = useNavigate()
+
+  const handleClick = (title: string) => {
+    navigate({ to: '/categories/$slug', params: { slug: slugify(title) } })
+  }
 
     return(
     <div className="flex flex-wrap gap-3 justify-center">
@@ -10,6 +20,8 @@ const CategoryCard = () => {
         highlight="Fiction"
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/4_p5aoit.png"
         bg_color="bg-purple-500"
+        onClick={() => handleClick("Science Fiction")}
+
         />
 
         <Cardicon 
@@ -18,6 +30,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/3_p8pkip.png"
         bg_color="bg-red-500"
+        onClick={() => handleClick("Aventure")}
         />
 
         <Cardicon 
@@ -26,6 +39,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604862/1_yqp9rr.png"
         bg_color="bg-[#00C0E8]"
+        onClick={() => handleClick("Drame")}
         />
 
 
@@ -35,6 +49,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/2_dky9er.png"
         bg_color="bg-[#730E27]"
+        onClick={() => handleClick("Horreur")}
         /> 
 
         <Cardicon 
@@ -43,6 +58,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/9_fxvpxs.png"
         bg_color="bg-[#AC7F5E]"
+        onClick={() => handleClick("Crime")}
         /> 
 
         <Cardicon 
@@ -51,6 +67,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/8_cxw7pt.png"
         bg_color="bg-[#20F1C0]"
+        onClick={() => handleClick("Mystere")}
         /> 
 
          <Cardicon 
@@ -59,6 +76,7 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/5_zm5laa.png"
         bg_color="bg-[#34c579]"
+        onClick={() => handleClick("Comedie")}
         /> 
 
          <Cardicon 
@@ -67,14 +85,16 @@ const CategoryCard = () => {
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/7_zspbt9.png"
         bg_color="bg-[#FC0]"
+        onClick={() => handleClick("Fantasy")}
         /> 
 
         <Cardicon 
         
-        title="Fantasy"
+        title="Romance"
         highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604861/6_yknsaz.png"
         bg_color="bg-[#08F]"
+        onClick={() => handleClick("Romance")}
         /> 
 
        </div>
