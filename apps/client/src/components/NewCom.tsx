@@ -19,7 +19,7 @@ export const NewCom = ({ film, subject }: NewComProps) => {
         const payload: Partial<Omit<Comment, 'id'>> = {
             title: comment,
             user_id: 1,
-        };
+            };
 
         if (film) {
             payload.film_id = film.id;
