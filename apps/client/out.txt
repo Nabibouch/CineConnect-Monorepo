@@ -1,0 +1,74 @@
+
+[1m[46m RUN [49m[22m [36mv4.1.2 [39m[90mC:/Users/lmrab/Desktop/Monorepo test/apps/client[39m
+
+ [31m❯[39m src/__tests__/services/apiUser.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 14[2mms[22m[39m
+[31m       [31m×[31m should successfully fetch user by id[39m[32m 9[2mms[22m[39m
+       [32m✓[39m should throw an error with the API error message[32m 2[2mms[22m[39m
+       [32m✓[39m should throw a default error if API fails without a specific error message[32m 0[2mms[22m[39m
+[31m       [31m×[31m should successfully fetch the current user[39m[32m 1[2mms[22m[39m
+       [32m✓[39m should throw an error when fetch fails[32m 0[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/services/apiUser.test.ts[2m > [22mapiUser Service[2m > [22mgetUserById[2m > [22mshould successfully fetch user by id
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called with arguments: [ …(2) ][90m
+
+Received:
+
+[1m  1st vi.fn() call:
+
+[22m[2m  [[22m
+[32m-   "http://localhost:3000/users/1",[90m
+[31m+   "http://localhost:3000/api/users/1",[90m
+[2m    {[22m
+[2m      "credentials": "include",[22m
+[2m    },[22m
+[2m  ][22m
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+[36m [2m❯[22m src/__tests__/services/apiUser.test.ts:[2m28:28[22m[39m
+    [90m 26|[39m       [35mconst[39m result [33m=[39m [35mawait[39m apiUser[33m.[39m[34mgetUserById[39m([32m'1'[39m)[33m;[39m
+    [90m 27|[39m
+    [90m 28|[39m       expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000…
+    [90m   |[39m                            [31m^[39m
+    [90m 29|[39m         credentials[33m:[39m [32m'include'[39m[33m,[39m
+    [90m 30|[39m       })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/services/apiUser.test.ts[2m > [22mapiUser Service[2m > [22mgetMe[2m > [22mshould successfully fetch the current user
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called with arguments: [ …(2) ][90m
+
+Received:
+
+[1m  1st vi.fn() call:
+
+[22m[2m  [[22m
+[32m-   "http://localhost:3000/users/me",[90m
+[31m+   "http://localhost:3000/api/users/me",[90m
+[2m    {[22m
+[2m      "credentials": "include",[22m
+[2m    },[22m
+[2m  ][22m
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+[36m [2m❯[22m src/__tests__/services/apiUser.test.ts:[2m66:28[22m[39m
+    [90m 64|[39m       [35mconst[39m result [33m=[39m [35mawait[39m apiUser[33m.[39m[34mgetMe[39m()[33m;[39m
+    [90m 65|[39m
+    [90m 66|[39m       expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000…
+    [90m   |[39m                            [31m^[39m
+    [90m 67|[39m         credentials[33m:[39m [32m'include'[39m[33m,[39m
+    [90m 68|[39m       })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 22:16:14
+[2m   Duration [22m 525ms[2m (transform 325ms, setup 0ms, import 343ms, tests 14ms, environment 0ms)[22m
+

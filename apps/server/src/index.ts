@@ -1,7 +1,17 @@
-let result = 0;
+// src/index.ts
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+import { setupWebSocket } from './ws/handler.js';
+import ENV from './config/ENV.js';
+import app from './app.js';
 
-for(let i = 0; i <5; i++){
-    result += 1;
-}
+const server = createServer(app);
+const wss = new WebSocketServer({ server });
 
-console.log(result);
+setupWebSocket(wss);
+
+const PORT = ENV.PORT;
+
+server.listen(PORT, () => {
+  console.log(`Server listening on port : ${PORT}`);
+});
