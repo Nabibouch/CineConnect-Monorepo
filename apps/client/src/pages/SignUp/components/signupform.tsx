@@ -62,7 +62,7 @@ export function SignUpForm() {
     onSuccess: () => {
       setSuccessMessage("Inscription réussie ! Redirection...")
       setTimeout(() => {
-        navigate({ to: "/signin" })
+        navigate({ to: "/" })
       }, 1500)
     },
     onError: (error) => {

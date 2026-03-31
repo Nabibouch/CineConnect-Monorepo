@@ -19,8 +19,23 @@ export const signUp = async (req: Request, res: Response) => {
     const newUser = await userService.createUser(parsed.data);
     const { password, ...userWithoutPassword } = newUser;
 
+    // JWT (connexion automatique)
+    const token = jwt.sign(
+      { id: userWithoutPassword.id, email: userWithoutPassword.email },
+      ENV.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Cookie httpOnly
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return res.status(201).json({
-      message: "Nouvel utilisateur créé",
+      message: "Nouvel utilisateur créé et connecté",
       user: userWithoutPassword,
     });
   } catch (error) {
