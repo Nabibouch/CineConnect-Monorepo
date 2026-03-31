@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import type { Film } from '../../../utils/types';
 
 type FilmDetailsProps = {
-    film: Film; // tu pourras typer plus tard proprement
+    film: Film;
 };
 
 export const FilmDetails = ({ film }: FilmDetailsProps) => {

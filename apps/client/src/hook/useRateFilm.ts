@@ -9,6 +9,7 @@ export const useRateFilm = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['film'] });
             queryClient.invalidateQueries({ queryKey: ['films'] });
+            queryClient.invalidateQueries({ queryKey: ['ratings'] });
         },
     });
 };

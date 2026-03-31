@@ -4,10 +4,12 @@ import { useOneFilm } from '../../../hook/useFilms';
 import { useRateFilm } from '../../../hook/useRateFilm';
 import { getAverageRating } from '../../../utils/averageRating';
 import { Star } from 'lucide-react';
+import { useMe } from '../../../hook/useUsers';
 
 const FilmHeader = () => {
     const { id } = useParams({ from: '/_register/films/$id' });
     const { data, isLoading, isError } = useOneFilm(id);
+    const { data: me } = useMe();
     const { mutate: rateFilm, isPending: isRatePending } = useRateFilm();
 
     if (isLoading) return <div className="p-4">Chargement...</div>;
@@ -19,7 +21,8 @@ const FilmHeader = () => {
     const averageRate = getAverageRating(film);
 
     const handleRate = (rate: number) => {
-        rateFilm({ rate, film_id: Number(id), user_id: 1 });
+        if (!me) return;
+        rateFilm({ rate, film_id: Number(id), user_id: me.id });
     };
 
     return (
@@ -57,7 +60,7 @@ const FilmHeader = () => {
                             <div className="flex items-baseline gap-4 flex-wrap">
                                 <h1 className="text-6xl font-black uppercase text-rose-500">{film.title}</h1>
                                 <p className="text-white text-xl font-semibold tracking-widest uppercase">
-                                    {film.released_date.slice(0, 4)} , {film.language || 'VF'} , {film.author || 'Antoine Lucsko'}
+                                    {film.released_date} , {film.language || 'VF'} , {film.author || 'Inconnu'}
                                 </p>
                             </div>
                             <RatingStars
