@@ -9,7 +9,7 @@ export type FilmThemeDefinition = {
 
 type FilterBarProps = {
   themes: FilmThemeDefinition[];
-  selectedTheme: string | null;
+  selectedThemes: string[];
   onSelectTheme: (theme: string) => void;
   navigateTo?: boolean; // ← nouveau
 };
@@ -19,7 +19,7 @@ const slugify = (title: string) =>
 
 const FilterBar = ({
   themes,
-  selectedTheme,
+  selectedThemes,
   onSelectTheme,
   navigateTo = false, // ← par défaut : mode filtre
 }: FilterBarProps) => {
@@ -36,7 +36,7 @@ const FilterBar = ({
   return (
     <div className="flex gap-3 justify-center">
       {themes.map((theme) => {
-        const active = selectedTheme === theme.title;
+        const active = selectedThemes.includes(theme.title);
 
         return (
           <button

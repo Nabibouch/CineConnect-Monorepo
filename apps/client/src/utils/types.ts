@@ -32,7 +32,7 @@ export interface Film {
   trailer: string | null;
   actors: string | null;
   awards: string | null;
-  released_date: string | null;
+  released_date: string | "00000000";
   categories?: string[];
   created_at: string;
   posts: Post[];

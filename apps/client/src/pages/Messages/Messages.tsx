@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useAuth } from "../../hook/useAuth";
 
 type WsMessage = {
   id?: number;
@@ -24,16 +25,14 @@ const normalizeBaseUrl = (raw: string) => raw.trim().replace(/\/$/, "");
 
 const normalizeRestBaseUrl = (raw: string) => {
   const base = normalizeBaseUrl(raw);
-  // Vos routes (films/users/conversations) ne sont pas sous /api, donc si VITE_API_URL
-  // vaut ".../api" on le retire pour éviter les 404.
   return base.replace(/\/api$/i, "");
 };
 
 const Messages = () => {
+  const { user, loading } = useAuth();
   const baseUrl = getDefaultBaseUrl();
-  const [userId, setUserId] = useState("1");
-  const [conversationId, setConversationId] = useState("1");
-  const [peerUserId, setPeerUserId] = useState("2");
+  const [conversationId, setConversationId] = useState<string>("");
+  const [peerUserId, setPeerUserId] = useState("");
   const [conversations, setConversations] = useState<UserConversation[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [draft, setDraft] = useState("");
@@ -45,32 +44,29 @@ const Messages = () => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const canSend = useMemo(
-    () => status === "connected" && draft.trim().length > 0,
-    [status, draft],
+    () => status === "connected" && draft.trim().length > 0 && conversationId.trim().length > 0,
+    [status, draft, conversationId],
   );
 
   const addEvent = (event: string) => {
     setEvents((prev) => [...prev, event].slice(-20));
   };
 
-  const connect = () => {
-    if (!userId.trim()) {
-      addEvent("Impossible de se connecter: userId vide.");
-      return;
-    }
+  useEffect(() => {
+    if (!user?.id) return;
 
     socketRef.current?.close();
     setStatus("connecting");
 
     const wsBase = normalizeRestBaseUrl(baseUrl).replace(/^http/i, "ws");
     const socket = new WebSocket(
-      `${wsBase.replace(/\/$/, "")}?userId=${encodeURIComponent(userId.trim())}`,
+      `${wsBase.replace(/\/$/, "")}?userId=${encodeURIComponent(String(user.id))}`,
     );
     socketRef.current = socket;
 
     socket.onopen = () => {
       setStatus("connected");
-      addEvent(`Connecté en tant que user ${userId.trim()}.`);
+      addEvent(`Connecté automatiquement en tant que user ${user.id}.`);
     };
 
     socket.onmessage = (event) => {
@@ -93,7 +89,12 @@ const Messages = () => {
       setStatus("disconnected");
       addEvent("Connexion fermée.");
     };
-  };
+
+    return () => {
+      socket.close();
+      setStatus("disconnected");
+    };
+  }, [user?.id, baseUrl]);
 
   const refreshConversations = async (id: string) => {
     const trimmed = id.trim();
@@ -118,7 +119,7 @@ const Messages = () => {
       setConversations(list);
 
       if (list.length > 0) {
-        setConversationId(String(list[0].conversation_id));
+        setConversationId((prev) => prev || String(list[0].conversation_id));
       }
     } catch {
       addEvent("Erreur réseau lors de la récupération des conversations.");
@@ -128,11 +129,36 @@ const Messages = () => {
     }
   };
 
+  // Si on reçoit un message pour une conversation que l'on ne connait pas encore (nouvelle conv),
+  // on rafraîchit la liste des conversations automatiquement.
+  useEffect(() => {
+    if (messages.length === 0 || conversationsLoading || !user?.id) return;
+    
+    const latestMessage = messages[messages.length - 1];
+    if (!latestMessage || !latestMessage.conversation_id) return;
+
+    const isKnown = conversations.some(
+      (c) => String(c.conversation_id) === String(latestMessage.conversation_id)
+    );
+
+    if (!isKnown) {
+      void refreshConversations(String(user.id));
+    }
+  }, [messages, conversations, user?.id, conversationsLoading]);
+
+  useEffect(() => {
+    if (user?.id) {
+      void refreshConversations(String(user.id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
   const createConversation = async () => {
-    const me = Number(userId);
+    if (!user?.id) return;
+    const me = user.id;
     const other = Number(peerUserId);
-    if (!Number.isFinite(me) || !Number.isFinite(other)) {
-      addEvent("userId / peerUserId doivent être des nombres.");
+    if (!Number.isFinite(me) || !Number.isFinite(other) || other <= 0) {
+      addEvent("L'ID du destinataire doit être un nombre valide.");
       return;
     }
 
@@ -151,23 +177,13 @@ const Messages = () => {
       }
 
       setConversationId(String(json.id));
-      addEvent(`Conversation créée: ${json.id}`);
-      await refreshConversations(userId);
+      addEvent(`Conversation créée ou rejointe: ${json.id}`);
+      await refreshConversations(String(user.id));
+      setPeerUserId(""); // clear input
     } catch {
       addEvent("Erreur réseau lors de la création de la conversation.");
     }
   };
-
-  const disconnect = () => {
-    socketRef.current?.close();
-    socketRef.current = null;
-    setStatus("disconnected");
-  };
-
-  useEffect(() => {
-    void refreshConversations(userId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
@@ -190,97 +206,89 @@ const Messages = () => {
     setDraft("");
   };
 
+  if (loading) {
+    return (
+      <main className="flex-1 bg-slate-950 px-6 py-8 text-white">
+        <p className="text-slate-400">Chargement de votre session...</p>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="flex-1 bg-slate-950 px-6 py-8 text-white">
+        <p className="text-amber-400">Veuillez vous connecter pour accéder aux messages.</p>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 bg-slate-950 px-6 py-8 text-white">
       <div className="mx-auto max-w-5xl space-y-6">
-        <h1 className="text-3xl font-semibold tracking-wide">Test WebSocket</h1>
+        <h1 className="text-3xl font-semibold tracking-wide">Messagerie</h1>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-          <div className="mb-4 flex flex-wrap items-end gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              User ID
-              <input
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              Conversation ID (existant)
-              <div className="flex gap-2">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="flex flex-col gap-1 text-sm">
+                Envoyer un message à (User ID)
                 <input
-                  value={conversationId}
-                  onChange={(e) => setConversationId(e.target.value)}
-                  className="w-40 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                  value={peerUserId}
+                  onChange={(e) => setPeerUserId(e.target.value)}
+                  placeholder="ID du destinataire"
+                  className="w-48 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
                 />
-                <button
-                  onClick={() => refreshConversations(userId)}
-                  className="rounded-md border border-slate-700 px-3 py-2 text-sm"
-                  type="button"
-                  disabled={conversationsLoading}
-                >
-                  {conversationsLoading ? "..." : "Rafraîchir"}
-                </button>
-              </div>
-            </label>
-
-            <button
-              onClick={connect}
-              className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
-              type="button"
-            >
-              Connecter
-            </button>
-
-            <button
-              onClick={disconnect}
-              className="rounded-md border border-slate-700 px-4 py-2"
-              type="button"
-            >
-              Déconnecter
-            </button>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-end gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Créer une conversation avec userId
-              <input
-                value={peerUserId}
-                onChange={(e) => setPeerUserId(e.target.value)}
-                className="w-40 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-              />
-            </label>
-            <button
-              onClick={createConversation}
-              className="rounded-md border border-slate-700 px-4 py-2"
-              type="button"
-            >
-              Créer
-            </button>
-
-            <div className="text-sm text-slate-300">
-              Conversations trouvées:{" "}
-              <span className="font-medium text-white">
-                {conversations.length}
-              </span>
+              </label>
+              <button
+                onClick={createConversation}
+                disabled={!peerUserId.trim()}
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
+                type="button"
+              >
+                Créer / Rejoindre
+              </button>
             </div>
-          </div>
 
-          <p className="text-sm">
-            Statut:{" "}
-            <span
-              className={
-                status === "connected"
-                  ? "text-emerald-400"
-                  : status === "connecting"
-                    ? "text-amber-400"
-                    : "text-slate-400"
-              }
-            >
-              {status}
-            </span>
-          </p>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-slate-300">
+                Vos conversations ({conversations.length}) :
+              </div>
+              {conversationsLoading && <span className="text-sm text-slate-500">Chargement...</span>}
+            </div>
+
+            {conversations.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {conversations.map((conv) => (
+                  <button
+                    key={conv.conversation_id}
+                    onClick={() => setConversationId(String(conv.conversation_id))}
+                    className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                      conversationId === String(conv.conversation_id)
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800"
+                    }`}
+                  >
+                    Conversation #{conv.conversation_id}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <p className="text-sm mt-2">
+              Statut:{" "}
+              <span
+                className={
+                  status === "connected"
+                    ? "text-emerald-400"
+                    : status === "connecting"
+                      ? "text-amber-400"
+                      : "text-slate-400"
+                }
+              >
+                {status === "connected" ? "Connecté en temps réel" : status === "connecting" ? "Connexion..." : "Déconnecté"}
+              </span>
+            </p>
+          </div>
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
@@ -288,8 +296,9 @@ const Messages = () => {
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Votre message..."
-              className="min-w-[260px] flex-1 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              placeholder={conversationId ? `Message pour la conversation #${conversationId}...` : "Sélectionnez une conversation..."}
+              disabled={!conversationId}
+              className="min-w-[260px] flex-1 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white disabled:opacity-50"
             />
             <button
               type="submit"
@@ -303,36 +312,49 @@ const Messages = () => {
 
         <section className="grid gap-4 md:grid-cols-2">
           <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-            <h2 className="mb-3 text-lg font-medium">Messages reçus</h2>
-            <div className="max-h-80 space-y-2 overflow-y-auto text-sm">
-              {messages.length === 0 ? (
-                <p className="text-slate-400">Aucun message pour l’instant.</p>
+            <h2 className="mb-3 text-lg font-medium">
+              Messages {conversationId ? `(Conv #${conversationId})` : ""}
+            </h2>
+            <div className="max-h-80 space-y-3 overflow-y-auto text-sm">
+              {messages.filter((m) => String(m.conversation_id) === conversationId || m.error).length === 0 ? (
+                <p className="text-slate-400">Aucun message dans cette conversation.</p>
               ) : (
-                messages.map((message, index) => (
-                  <div key={`${message.id ?? "m"}-${index}`} className="rounded-md border border-slate-800 p-2">
-                    <p className="text-slate-300">
-                      <span className="font-medium text-white">sender_id:</span>{" "}
-                      {message.sender_id ?? "?"}
-                    </p>
-                    <p className="text-slate-300">
-                      <span className="font-medium text-white">conversation_id:</span>{" "}
-                      {message.conversation_id ?? "?"}
-                    </p>
-                    <p>{message.content ?? message.error ?? "(vide)"}</p>
-                  </div>
-                ))
+                messages
+                  .filter((m) => String(m.conversation_id) === conversationId || m.error)
+                  .map((message, index) => {
+                    const isMe = message.sender_id === user?.id;
+                    return (
+                      <div
+                        key={`${message.id ?? "m"}-${index}`}
+                        className={`rounded-md border p-3 ${
+                          isMe ? "ml-8 border-primary/30 bg-primary/10" : "mr-8 border-slate-700 bg-slate-800"
+                        }`}
+                      >
+                        {message.error ? (
+                          <p className="text-red-400">{message.error}</p>
+                        ) : (
+                          <>
+                            <p className="mb-1 text-xs text-slate-400">
+                              {isMe ? "Vous" : `User ${message.sender_id ?? "?"}`}
+                            </p>
+                            <p className="text-slate-200">{message.content ?? "(vide)"}</p>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })
               )}
             </div>
           </div>
 
           <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-            <h2 className="mb-3 text-lg font-medium">Logs connexion</h2>
+            <h2 className="mb-3 text-lg font-medium">Logs applicatifs</h2>
             <div className="max-h-80 space-y-2 overflow-y-auto text-sm">
               {events.length === 0 ? (
                 <p className="text-slate-400">Aucun log.</p>
               ) : (
                 events.map((event, index) => (
-                  <p key={`${event}-${index}`} className="text-slate-300">
+                  <p key={`${event}-${index}`} className="text-slate-400">
                     - {event}
                   </p>
                 ))
@@ -346,3 +368,4 @@ const Messages = () => {
 };
 
 export default Messages;
+

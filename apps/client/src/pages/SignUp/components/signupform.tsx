@@ -36,7 +36,7 @@ export function SignUpForm() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-          credentials : "include"
+          credentials: "include"
         }
       )
 
@@ -51,7 +51,7 @@ export function SignUpForm() {
         try {
           const errorData = JSON.parse(responseText)
           console.log("Error data parsed:", errorData)
-          errorMessage = errorData.message || errorMessage
+          errorMessage = errorData.error || errorData.message || errorMessage
         } catch (e) {
           console.log("Could not parse error JSON, raw text:", responseText)
           errorMessage = responseText || errorMessage
@@ -62,7 +62,7 @@ export function SignUpForm() {
     onSuccess: () => {
       setSuccessMessage("Inscription réussie ! Redirection...")
       setTimeout(() => {
-        navigate({ to: "/signin" })
+        navigate({ to: "/" })
       }, 1500)
     },
     onError: (error) => {

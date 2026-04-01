@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { useParams } from '@tanstack/react-router';
 import { useCreateSubject } from '../../../hook/useSubjects';
+import { useMe } from '../../../hook/useUsers';
 
 export const NewSubject = () => {
   const { id } = useParams({ from: '/_register/films/$id' });
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const createSubject = useCreateSubject();
+  const { data: me } = useMe();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !id) return;
+    if (!title.trim() || !id || !me) return;
 
     createSubject.mutate(
       {
         title: title,
         description: description.trim(),
         film_id: Number(id),
-        user_id: 1, // Hardcoded en attendant un auth context si ce n'est pas fourni
+        user_id: me.id,
       },
       {
         onSuccess: () => {
@@ -68,6 +70,9 @@ export const NewSubject = () => {
 
         <div className="flex items-center justify-between mt-2">
           <div className="text-sm">
+            {!me && (
+              <span className="text-amber-300">Connecte-toi pour creer un sujet.</span>
+            )}
             {createSubject.isError && (
               <span className="text-red-400">Erreur lors de la création du sujet. Veuillez réessayer.</span>
             )}
@@ -77,7 +82,7 @@ export const NewSubject = () => {
           </div>
           <button
             type="submit"
-            disabled={createSubject.isPending || !title.trim()}
+            disabled={createSubject.isPending || !title.trim() || !me}
             className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white font-medium rounded-md transition-colors"
           >
             {createSubject.isPending ? 'Création en cours...' : 'Créer le sujet'}

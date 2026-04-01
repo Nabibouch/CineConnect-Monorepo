@@ -1,17 +1,19 @@
 import { create } from "zustand";
 
 type FilmThemeState = {
-  selectedTheme: string | null;
+  selectedThemes: string[];
   selectTheme: (theme: string) => void;
   clearTheme: () => void;
 };
 
 export const useFilmThemeStore = create<FilmThemeState>((set) => ({
-  selectedTheme: null,
+  selectedThemes: [],
   selectTheme: (theme) =>
     set((state) => ({
-      selectedTheme: state.selectedTheme === theme ? null : theme,
+      selectedThemes: state.selectedThemes.includes(theme)
+        ? state.selectedThemes.filter((t) => t !== theme)
+        : [...state.selectedThemes, theme],
     })),
-  clearTheme: () => set({ selectedTheme: null }),
+  clearTheme: () => set({ selectedThemes: [] }),
 }));
 

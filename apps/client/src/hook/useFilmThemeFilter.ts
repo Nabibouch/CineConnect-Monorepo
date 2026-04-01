@@ -67,19 +67,20 @@ export const FILM_THEMES: FilmThemeDefinition[] = [
 ];
 
 export const useFilmThemeFilter = (films?: Film[] | null) => {
-  const selectedTheme = useFilmThemeStore((s) => s.selectedTheme);
+  const selectedThemes = useFilmThemeStore((s) => s.selectedThemes);
   const selectTheme = useFilmThemeStore((s) => s.selectTheme);
 
   const filteredFilms = useMemo(() => {
     if (!films) return films;
-    if (!selectedTheme) return films;
+    if (selectedThemes.length === 0) return films;
 
     return films.filter((film) => {
       const filmCategories = film.categories ?? [];
-      return filmCategories.includes(selectedTheme);
+      // Un film passe le filtre s'il contient au moins un des thèmes sélectionnés (OR)
+      return selectedThemes.some(theme => filmCategories.includes(theme));
     });
-  }, [films, selectedTheme]);
+  }, [films, selectedThemes]);
 
-  return { themes: FILM_THEMES, selectedTheme, selectTheme, filteredFilms };
+  return { themes: FILM_THEMES, selectedThemes, selectTheme, filteredFilms };
 };
 

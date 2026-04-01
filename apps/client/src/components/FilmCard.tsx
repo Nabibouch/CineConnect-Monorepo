@@ -26,7 +26,7 @@ const FilmCard = ({ film }: FilmCardProps) => {
             />
             {/* Overlay Gradient (fade in on hover) */}
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 pointer-events-none" />
-            
+            <h2 className="text-lg text-white font-medium absolute bottom-4 left-6 opacity-0 translate-y-4 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">{film.title}</h2>
             {/* Rating badge (slide up and fade in on bottom right) */}
             <div className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/60 text-white px-3 py-1.5 rounded-full backdrop-blur-md opacity-0 translate-y-4 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
               <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -36,13 +36,6 @@ const FilmCard = ({ film }: FilmCardProps) => {
             </div>
           </div>
         )}
-        <h2 className="text-3xl text-white font-semibold">{film.title}</h2>
-        <p className="text-2xl text-red-500">
-          <span className="font-medium"></span>{" "}
-          {film.released_date
-            ? new Date(film.released_date).toLocaleDateString()
-            : "Inconnue"}
-        </p>
       </article>
     </Link>
   );

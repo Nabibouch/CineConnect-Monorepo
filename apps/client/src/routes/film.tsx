@@ -1,6 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { apiUser } from '../services/apiUser'
 
 export const Route = createFileRoute('/film')({
+  beforeLoad: async () => {
+    try {
+      await apiUser.getMe();
+    } catch (error) {
+      throw redirect({
+        to: '/signup',
+      });
+    }
+  },
   component: RouteComponent,
 })
 
