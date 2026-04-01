@@ -104,10 +104,12 @@ export const messagesTable = pgTable("messages", {
   created_at: timestamp().defaultNow(),
 });
 
-export const iconstable = pgTable("Icons", {
+export const actors = pgTable("Actors", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  icons: varchar(),
-});
+  poster_url: text(),
+  name: text(),
+  biography: text(),
+})
 
 export const followsTable = pgTable("follows", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),

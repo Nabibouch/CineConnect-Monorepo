@@ -14,7 +14,8 @@
     "drizzle:push": "npx drizzle-kit push",
     "drizzle:generate": "npx drizzle-kit generate",
     "drizzle:migrate": "npx drizzle-kit migrate",
-    "seed:films": "tsx --no-cache src/utils/seed.ts"
+    "seed:films": "tsx --no-cache src/utils/seed.ts",
+    "seed:actors": "tsx --no-cache src/utils/seedactors.ts"
   },
   "keywords": [],
   "author": "",

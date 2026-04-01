@@ -5,7 +5,7 @@ const Theme = () => {
 return(
     <div className="flex gap-3 justify-center ">
      <Filmtheme  
-        title="Science"
+        title="Science Fiction"
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/4_p5aoit.png"
         bg_color="bg-purple-500"
         />

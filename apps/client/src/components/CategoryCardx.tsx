@@ -13,11 +13,20 @@ const slugify = (title: string) =>
   }
 
     return(
-    <div className="flex flex-wrap gap-3 justify-center">
+
+      <div>
+  <div className="mb-8">
+    <h2 className="text-3xl text-white uppercase">
+    Film <span className="text-rose-500">Categories</span>
+    </h2>
+    <div className="w-16 h-1 bg-rose-500 mt-2" />
+  </div>
+
+  <div className="flex flex-wrap gap-3 justify-center">
         <Cardicon 
         
-        title="Science"
-        highlight="Fiction"
+        title="Science Fiction"
+        highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/4_p5aoit.png"
         bg_color="bg-purple-500"
         onClick={() => handleClick("Science Fiction")}
@@ -96,8 +105,9 @@ const slugify = (title: string) =>
         bg_color="bg-[#08F]"
         onClick={() => handleClick("Romance")}
         /> 
-
-       </div>
+  </div>
+</div>
+           
     )
 }
 
