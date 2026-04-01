@@ -18,10 +18,12 @@ import { Route as RegisterIndexRouteImport } from './routes/_register/index'
 import { Route as RegisterMessagesRouteImport } from './routes/_register/messages'
 import { Route as RegisterSubjectsIndexRouteImport } from './routes/_register/subjects/index'
 import { Route as RegisterFilmsIndexRouteImport } from './routes/_register/films/index'
+import { Route as RegisterActorsIndexRouteImport } from './routes/_register/actors/index'
 import { Route as RegisterSubjectsIdRouteImport } from './routes/_register/subjects/$id'
 import { Route as RegisterProfilIdRouteImport } from './routes/_register/profil/$id'
 import { Route as RegisterFilmsIdRouteImport } from './routes/_register/films/$id'
 import { Route as RegisterCategoriesSlugRouteImport } from './routes/_register/categories/$slug'
+import { Route as RegisterActorsIdRouteImport } from './routes/_register/actors/$id'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
@@ -67,6 +69,11 @@ const RegisterFilmsIndexRoute = RegisterFilmsIndexRouteImport.update({
   path: '/films/',
   getParentRoute: () => RegisterRoute,
 } as any)
+const RegisterActorsIndexRoute = RegisterActorsIndexRouteImport.update({
+  id: '/actors/',
+  path: '/actors/',
+  getParentRoute: () => RegisterRoute,
+} as any)
 const RegisterSubjectsIdRoute = RegisterSubjectsIdRouteImport.update({
   id: '/subjects/$id',
   path: '/subjects/$id',
@@ -87,6 +94,11 @@ const RegisterCategoriesSlugRoute = RegisterCategoriesSlugRouteImport.update({
   path: '/categories/$slug',
   getParentRoute: () => RegisterRoute,
 } as any)
+const RegisterActorsIdRoute = RegisterActorsIdRouteImport.update({
+  id: '/actors/$id',
+  path: '/actors/$id',
+  getParentRoute: () => RegisterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof RegisterIndexRoute
@@ -95,10 +107,12 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/test': typeof TestRoute
   '/messages': typeof RegisterMessagesRoute
+  '/actors/$id': typeof RegisterActorsIdRoute
   '/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/films/$id': typeof RegisterFilmsIdRoute
   '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/actors/': typeof RegisterActorsIndexRoute
   '/films/': typeof RegisterFilmsIndexRoute
   '/subjects/': typeof RegisterSubjectsIndexRoute
 }
@@ -109,10 +123,12 @@ export interface FileRoutesByTo {
   '/test': typeof TestRoute
   '/messages': typeof RegisterMessagesRoute
   '/': typeof RegisterIndexRoute
+  '/actors/$id': typeof RegisterActorsIdRoute
   '/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/films/$id': typeof RegisterFilmsIdRoute
   '/profil/$id': typeof RegisterProfilIdRoute
   '/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/actors': typeof RegisterActorsIndexRoute
   '/films': typeof RegisterFilmsIndexRoute
   '/subjects': typeof RegisterSubjectsIndexRoute
 }
@@ -125,10 +141,12 @@ export interface FileRoutesById {
   '/test': typeof TestRoute
   '/_register/messages': typeof RegisterMessagesRoute
   '/_register/': typeof RegisterIndexRoute
+  '/_register/actors/$id': typeof RegisterActorsIdRoute
   '/_register/categories/$slug': typeof RegisterCategoriesSlugRoute
   '/_register/films/$id': typeof RegisterFilmsIdRoute
   '/_register/profil/$id': typeof RegisterProfilIdRoute
   '/_register/subjects/$id': typeof RegisterSubjectsIdRoute
+  '/_register/actors/': typeof RegisterActorsIndexRoute
   '/_register/films/': typeof RegisterFilmsIndexRoute
   '/_register/subjects/': typeof RegisterSubjectsIndexRoute
 }
@@ -141,10 +159,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/test'
     | '/messages'
+    | '/actors/$id'
     | '/categories/$slug'
     | '/films/$id'
     | '/profil/$id'
     | '/subjects/$id'
+    | '/actors/'
     | '/films/'
     | '/subjects/'
   fileRoutesByTo: FileRoutesByTo
@@ -155,10 +175,12 @@ export interface FileRouteTypes {
     | '/test'
     | '/messages'
     | '/'
+    | '/actors/$id'
     | '/categories/$slug'
     | '/films/$id'
     | '/profil/$id'
     | '/subjects/$id'
+    | '/actors'
     | '/films'
     | '/subjects'
   id:
@@ -170,10 +192,12 @@ export interface FileRouteTypes {
     | '/test'
     | '/_register/messages'
     | '/_register/'
+    | '/_register/actors/$id'
     | '/_register/categories/$slug'
     | '/_register/films/$id'
     | '/_register/profil/$id'
     | '/_register/subjects/$id'
+    | '/_register/actors/'
     | '/_register/films/'
     | '/_register/subjects/'
   fileRoutesById: FileRoutesById
@@ -251,6 +275,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterFilmsIndexRouteImport
       parentRoute: typeof RegisterRoute
     }
+    '/_register/actors/': {
+      id: '/_register/actors/'
+      path: '/actors'
+      fullPath: '/actors/'
+      preLoaderRoute: typeof RegisterActorsIndexRouteImport
+      parentRoute: typeof RegisterRoute
+    }
     '/_register/subjects/$id': {
       id: '/_register/subjects/$id'
       path: '/subjects/$id'
@@ -279,16 +310,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterCategoriesSlugRouteImport
       parentRoute: typeof RegisterRoute
     }
+    '/_register/actors/$id': {
+      id: '/_register/actors/$id'
+      path: '/actors/$id'
+      fullPath: '/actors/$id'
+      preLoaderRoute: typeof RegisterActorsIdRouteImport
+      parentRoute: typeof RegisterRoute
+    }
   }
 }
 
 interface RegisterRouteChildren {
   RegisterMessagesRoute: typeof RegisterMessagesRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
+  RegisterActorsIdRoute: typeof RegisterActorsIdRoute
   RegisterCategoriesSlugRoute: typeof RegisterCategoriesSlugRoute
   RegisterFilmsIdRoute: typeof RegisterFilmsIdRoute
   RegisterProfilIdRoute: typeof RegisterProfilIdRoute
   RegisterSubjectsIdRoute: typeof RegisterSubjectsIdRoute
+  RegisterActorsIndexRoute: typeof RegisterActorsIndexRoute
   RegisterFilmsIndexRoute: typeof RegisterFilmsIndexRoute
   RegisterSubjectsIndexRoute: typeof RegisterSubjectsIndexRoute
 }
@@ -296,10 +336,12 @@ interface RegisterRouteChildren {
 const RegisterRouteChildren: RegisterRouteChildren = {
   RegisterMessagesRoute: RegisterMessagesRoute,
   RegisterIndexRoute: RegisterIndexRoute,
+  RegisterActorsIdRoute: RegisterActorsIdRoute,
   RegisterCategoriesSlugRoute: RegisterCategoriesSlugRoute,
   RegisterFilmsIdRoute: RegisterFilmsIdRoute,
   RegisterProfilIdRoute: RegisterProfilIdRoute,
   RegisterSubjectsIdRoute: RegisterSubjectsIdRoute,
+  RegisterActorsIndexRoute: RegisterActorsIndexRoute,
   RegisterFilmsIndexRoute: RegisterFilmsIndexRoute,
   RegisterSubjectsIndexRoute: RegisterSubjectsIndexRoute,
 }

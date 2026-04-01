@@ -53,3 +53,10 @@ export interface Conversation {
   created_at: string;
 }
 
+export type Actor = {
+  id: number;
+  name: string | null;
+  biography: string | null;
+  poster_url: string | null;
+};
+
