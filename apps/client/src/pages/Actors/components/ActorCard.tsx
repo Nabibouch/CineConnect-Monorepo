@@ -22,7 +22,7 @@ const ActorCard = ({ actor }: { actor: Actor }) => {
           </div>
         )}
       </div>
-      <p className="text-white font-bold text-lg uppercase tracking-wide group-hover:text-rose-500 transition-colors duration-300">
+      <p className="text-white font-sans font-bold text-lg uppercase tracking-wide group-hover:text-rose-500 transition-colors duration-300">
         {actor.name}
       </p>
     </div>

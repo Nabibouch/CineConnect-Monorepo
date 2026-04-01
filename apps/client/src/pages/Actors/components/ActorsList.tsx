@@ -15,16 +15,16 @@ const ActorsList = () => {
     <section className="py-10">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white uppercase">
+          <h2 className="text-3xl text-white uppercase">
             Most Popular <span className="text-rose-500">Celebrities</span>
           </h2>
           <div className="w-16 h-1 bg-rose-500 mt-2" />
         </div>
         <span
           onClick={() => navigate({ to: '/actors' })}
-          className="text-white font-bold uppercase cursor-pointer hover:text-pink-500 transition-colors"
+          className="text-white text-2xl uppercase cursor-pointer hover:text-rose-500 transition-colors"
         >
-          View <span className="text-pink-500">More</span>
+          View <span className="text-rose-500">More</span>
         </span>
       </div>
 
