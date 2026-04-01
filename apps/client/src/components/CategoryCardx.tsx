@@ -16,8 +16,8 @@ const slugify = (title: string) =>
     <div className="flex flex-wrap gap-3 justify-center">
         <Cardicon 
         
-        title="Science"
-        highlight="Fiction"
+        title="Science Fiction"
+        highlight=""
         image="https://res.cloudinary.com/dc4gctzct/image/upload/v1774604860/4_p5aoit.png"
         bg_color="bg-purple-500"
         onClick={() => handleClick("Science Fiction")}

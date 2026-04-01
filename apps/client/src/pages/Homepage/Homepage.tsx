@@ -2,6 +2,7 @@
 import CategoryCard from "../../components/CategoryCardx";
 import LastFilm from "./components/LastFilm";
 import TopRatedFilm from "./components/TopRatedFilm";
+import ActorsList from "../Actors/components/ActorsList";
 
 
 const Homepage = () => {
@@ -10,6 +11,7 @@ const Homepage = () => {
       
       <LastFilm/>
       <TopRatedFilm />
+      <ActorsList />
       <CategoryCard /> 
 
     </main>
