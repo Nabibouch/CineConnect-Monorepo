@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useFilmThemeStore } from '../../hook/useFilmThemeStore';
+import { useFilmThemeStore } from '../../store/useFilmThemeStore';
 
 describe('useFilmThemeStore (Zustand Hook)', () => {
   // Reset the store before each test
@@ -15,13 +15,13 @@ describe('useFilmThemeStore (Zustand Hook)', () => {
   it('should add a theme when selectTheme is called with a new theme', () => {
     const store = useFilmThemeStore.getState();
     store.selectTheme('Action');
-    
+
     expect(useFilmThemeStore.getState().selectedThemes).toEqual(['Action']);
   });
 
   it('should remove a theme when selectTheme is called with an already selected theme', () => {
     const store = useFilmThemeStore.getState();
-    
+
     // Add theme
     store.selectTheme('Drame');
     expect(useFilmThemeStore.getState().selectedThemes).toEqual(['Drame']);
@@ -35,7 +35,7 @@ describe('useFilmThemeStore (Zustand Hook)', () => {
     const store = useFilmThemeStore.getState();
     store.selectTheme('Action');
     store.selectTheme('Sci-Fi');
-    
+
     expect(useFilmThemeStore.getState().selectedThemes).toEqual(['Action', 'Sci-Fi']);
   });
 
@@ -43,7 +43,7 @@ describe('useFilmThemeStore (Zustand Hook)', () => {
     const store = useFilmThemeStore.getState();
     store.selectTheme('Comedy');
     store.selectTheme('Horror');
-    
+
     expect(useFilmThemeStore.getState().selectedThemes.length).toBe(2);
 
     useFilmThemeStore.getState().clearTheme();

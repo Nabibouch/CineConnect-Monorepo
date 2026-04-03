@@ -60,7 +60,7 @@ const FilmHeader = () => {
                             <div className="flex items-baseline gap-4 flex-wrap">
                                 <h1 className="text-6xl font-black uppercase text-rose-500">{film.title}</h1>
                                 <p className="text-white text-xl font-semibold tracking-widest uppercase">
-                                    {film.released_date} , {film.language || 'VF'} , {film.author || 'Inconnu'}
+                                    {film.released_date.slice(0,4)} , {film.language || 'VF'} , {film.author || 'Inconnu'}
                                 </p>
                             </div>
                             <RatingStars
@@ -75,9 +75,9 @@ const FilmHeader = () => {
                 {/* Description — commence après l'image, alignée avec le bord gauche de l'image */}
                 <div className="mx-32">
                     <div className="">
-                        <h2 className="text-3xl">
+                        <p className="text-xl">
                             {film.description}
-                        </h2>
+                        </p>
                     </div>
                 </div>
 
