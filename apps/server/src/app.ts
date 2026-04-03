@@ -5,6 +5,7 @@ import usersRouter from './routes/users.route.js';
 import filmsRouter from './routes/films.route.js';
 import conversationsRouter from './routes/conversations.route.js';
 import cookieParser from 'cookie-parser'
+import { setupSwagger } from './swagger.js';
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(cookieParser());
+
+// Swagger UI (OpenAPI)
+setupSwagger(app);
 app.use("/api", router);
 app.use('/conversations', conversationsRouter);
 

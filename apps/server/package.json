@@ -30,6 +30,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.8",
     "@types/pg": "^8.16.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/ws": "^8.18.1",
     "@vitest/coverage-v8": "4.0.18",
     "drizzle-kit": "^0.31.8",
