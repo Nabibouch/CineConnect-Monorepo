@@ -16,4 +16,3 @@ export const useFilmThemeStore = create<FilmThemeState>((set) => ({
     })),
   clearTheme: () => set({ selectedThemes: [] }),
 }));
-

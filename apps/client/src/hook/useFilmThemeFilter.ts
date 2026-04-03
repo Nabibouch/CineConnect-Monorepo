@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { Film } from "../utils/types";
-import { useFilmThemeStore } from "./useFilmThemeStore";
+import { useFilmThemeStore } from "../store/useFilmThemeStore";
 
 export type FilmThemeDefinition = {
   title: string;
@@ -83,4 +83,3 @@ export const useFilmThemeFilter = (films?: Film[] | null) => {
 
   return { themes: FILM_THEMES, selectedThemes, selectTheme, filteredFilms };
 };
-
